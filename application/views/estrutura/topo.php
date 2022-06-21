@@ -11,7 +11,7 @@
   <script src="https://kit.fontawesome.com/f89139718b.js" crossorigin="anonymous"></script>
   <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js'></script>
   <link rel="stylesheet" href="<?= base_url('assets') ?>/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-  <!-- <link rel="stylesheet" href="<?= base_url('assets') ?>/plugins/formValidation/formValidation.min.css"> -->
+  <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css">
   <link rel="stylesheet" href="<?= base_url('assets') ?>/plugins/toastr/toastr.min.css">
   <link rel="stylesheet" href="<?= base_url('assets') ?>/plugins/balloon/balloon.css">
   <link rel="stylesheet" href="<?= base_url('assets') ?>/css/adminlte.css">

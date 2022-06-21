@@ -1,6 +1,6 @@
 <!-- MODAL CADASTRA CLIENTE -->
 <div class="modal fade" id="modal-cadastra-cliente">
-  <div class="modal-dialog modal-sm">
+  <div class="modal-dialog modal-xl">
     <div class="modal-content">
       <div class="modal-header bg-primary">
         <h4 class="modal-title">Cadastrar Cliente</h4>
@@ -13,10 +13,69 @@
           <input type="hidden" id="codigo_cli" name="codigo_ant" value="0">
           <div class="card-body">
             <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-4">
                 <div class="form-group">
-                  <label for="nome_ant">Nome: </label>
-                  <input type="text" class="form-control" id="nome_ant" name="nome_ant" placeholder="Nome Comercial">
+                  <?php $campo = 'nome_cli'; ?>
+                  <label for="<?= $campo ?>">Nome: </label>
+                  <input type="text" class="form-control cpfcnpj" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="Nome">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <?php $campo = 'documento_cli'; ?>
+                  <label for="<?= $campo ?>">Documento: </label>
+                  <input type="text" class="form-control cpfcnpj" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="Documento">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <?php $campo = 'telefone_cli'; ?>
+                  <label for="<?= $campo ?>">Telefone: </label>
+                  <input type="text" class="form-control celular" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="Telefone">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-3">
+                <div class="form-group">
+                  <?php $campo = 'cep_cli'; ?>
+                  <label for="<?= $campo ?>">CEP: </label>
+                  <input type="text" class="form-control cep" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="CEP">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="form-group">
+                  <?php $campo = 'endereco_cli'; ?>
+                  <label for="<?= $campo ?>">Logradouro: </label>
+                  <input type="text" class="form-control logradouro" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="Logradouro">
+                </div>
+              </div>
+              <div class="col-md-1">
+                <div class="form-group">
+                  <?php $campo = 'numero_cli'; ?>
+                  <label for="<?= $campo ?>">Número: </label>
+                  <input type="text" class="form-control numero" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="Número">
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <?php $campo = 'bairro_cli'; ?>
+                  <label for="<?= $campo ?>">Bairro: </label>
+                  <input type="text" class="form-control bairro" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="Bairro">
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <?php $campo = 'cidade_cli'; ?>
+                  <label for="<?= $campo ?>">Cidade: </label>
+                  <input type="text" class="form-control cidade" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="Cidade">
+                </div>
+              </div>
+              <div class="col-md-1">
+                <div class="form-group">
+                  <?php $campo = 'estado_cli'; ?>
+                  <label for="<?= $campo ?>">Estado: </label>
+                  <input type="text" class="form-control estado" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="Estado">
                 </div>
               </div>
             </div>
