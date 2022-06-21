@@ -90,7 +90,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a href="<?= base_url('clientes') ?>" class="nav-link">
+              <a href="<?= base_url('cliente') ?>" class="nav-link">
                 <i class="nav-icon fas fa-user"></i>
                 <p>
                   Clientes

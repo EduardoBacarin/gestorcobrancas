@@ -45,7 +45,6 @@ class Login extends CI_Controller
       ];
 
       $this->session->set_userdata('usuario', $sessao);
-      redirect('dashboard', true);
       echo json_encode(array('retorno' => true, 'redirect' => '/dashboard'));
     } else {
       echo json_encode(array('retorno' => false, 'msg' => 'Usuário ou senha inválidos!'));

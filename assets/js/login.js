@@ -50,6 +50,8 @@ $(document).ready(function () {
         success: function (data) {
             if (data.retorno == false) {
               erro('Usuário ou Senha Inválida');
+            }else{
+              window.location.replace('dashboard')
             }
         }
     });
