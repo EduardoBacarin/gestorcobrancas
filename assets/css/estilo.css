@@ -1,0 +1,45 @@
+.svg-branco{
+    filter: invert(100%) sepia(0%) saturate(7466%) hue-rotate(44deg) brightness(101%) contrast(110%);
+}
+
+#divDesenho{
+    width: 100%;
+    position: relative;
+}
+
+#divDesenho .canvas-container, #divDesenho canvas{
+    /* position: absolute !important; */
+}
+
+/* .lower-canvas {
+    width: 100% !important;
+    height: 100% !important;
+    position: relative !important;  
+}
+.upper-canvas {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute !important;
+}
+.canvas-container {
+    width: 100% !important;
+    height: auto !important;
+    border-radius: 20px;
+} */
+
+[data-toggle="collapse"]:after {
+    display: inline-block;
+        display: inline-block;
+        font: normal normal normal 14px/1 FontAwesome;
+        font-size: inherit;
+        text-rendering: auto;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        content: "\f054";
+        transform: rotate(90deg) ;
+        transition: all linear 0.25s;
+        float: right;
+    }   
+[data-toggle="collapse"].collapsed:after {
+    transform: rotate(0deg) ;
+}
