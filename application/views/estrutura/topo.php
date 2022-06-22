@@ -97,6 +97,14 @@
                 </p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="<?= base_url('cobranca') ?>" class="nav-link">
+                <i class="fa-solid fa-money-bill ml-1"></i>
+                <p class="ml-2">
+                  Cobranças
+                </p>
+              </a>
+            </li>
           </ul>
         </nav>
         <!-- /.sidebar-menu -->

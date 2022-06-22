@@ -7,24 +7,26 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * 
  **/
 
-class Cliente extends CI_Controller{
-    
-  public function __construct(){
+class Cliente extends CI_Controller
+{
+
+  public function __construct()
+  {
     parent::__construct();
     // echo json_encode($this->session->userdata());exit;
-    if(empty($this->session->userdata('usuario')) || $this->session->userdata('usuario') == false){
+    if (empty($this->session->userdata('usuario')) || $this->session->userdata('usuario') == false) {
       redirect('login');
     }
   }
 
-  public function index(){
+  public function index()
+  {
 
     $rodape['js'] = ['assets/js/cliente.js'];
     $this->load->view('estrutura/topo');
     $this->load->view('03_clientes/lista');
     $this->load->view('03_clientes/modal_cadastro');
     $this->load->view('estrutura/rodape', $rodape);
-
   }
 
   public function listar()
@@ -50,17 +52,18 @@ class Cliente extends CI_Controller{
           $menu = '<div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">Ações </button>
                     <div class="dropdown-menu">
-                      <a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_cli . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>
+                      <a class="dropdown-item item-editar" data-codigo="' . $dt->codigo_cli . '" data-nome="' . $dt->nome_cli . '"> <i class="fa-solid fa-pen"></i> Editar</a>
+                      <a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_cli . '" data-nome="' . $dt->nome_cli . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>
                     </div>
                   </div>';
-          
+          $tipodoc = '';
           $array = array(
             $contador,
-            $dt->nome_cli,
-            $dt->documento_cli,
-            $dt->telefone_cli,
-            $dt->endereco_cli,
-            $dt->cidade_cli,
+            limitaTexto($dt->nome_cli, 40),
+            mask($dt->documento_cli, 'documento'),
+            mask($dt->telefone_cli, 'telefone'),
+            !empty($dt->endereco_cli) ? $dt->endereco_cli : '<span class="badge badge-pill badge-danger">Sem Informação</span>',
+            !empty($dt->nome_cid) ? $dt->nome_cid . ' / ' . $dt->uf_est  : '<span class="badge badge-pill badge-danger">Sem Informação</span>',
             $menu
           );
           array_push($retorno_dados, $array);
@@ -85,4 +88,84 @@ class Cliente extends CI_Controller{
     }
   }
 
+  public function salvar()
+  {
+    $this->load->model('clientes_model', 'cliente');
+    $this->load->model('cidade_model', 'cidade');
+    $post = $this->input->post();
+    $date = new DateTime();
+    if (!empty($post)) {
+      if (!empty($post['nome_cli']) && !empty($post['documento_cli']) && !empty($post['telefone_cli'])) {
+        $array = [
+          'nome_cli' => formata_string($post['nome_cli'], 'string'),
+          'documento_cli' => formata_string($post['documento_cli'], 'numeric'),
+          'telefone_cli' => formata_string($post['telefone_cli'], 'numeric'),
+          'codigo_usu' => $this->session->userdata('usuario')['codigo_usu'],
+          'datacadastro_cli' => $date->format('Y-m-d H:i:s')
+        ];
+
+        if (!empty($post['cidade_cli'])) {
+          $buscaCidade = $this->cidade->busca_cidade_nome($post['cidade_cli'], $post['estado_cli']);
+          if ($buscaCidade) {
+            $array['cep_cli'] = formata_string($post['cep_cli'], 'numeric');
+            $array['endereco_cli'] = formata_string($post['endereco_cli'], 'string');
+            $array['bairro_cli'] = formata_string($post['bairro_cli'], 'string');
+            $array['numero_cli'] = formata_string($post['numero_cli'], 'numeric');
+            $array['complemento_cli'] = $post['complemento_cli'];
+            $array['codigo_cid'] = $buscaCidade[0]->codigo_cid;
+          } else {
+            echo json_encode(array('retorno' => false, 'msg' => 'Não foi possível encontrar a cidade em nosso banco de dados</br>Contate o administrador'));
+          }
+        }
+
+        if ($post['codigo_cli'] == 0){
+          $inserir = $this->cliente->inserir($array);
+          if ($inserir) {
+            echo json_encode(array('retorno' => true, 'msg' => 'Cliente cadastrado com sucesso!'));
+          } else {
+            echo json_encode(array('retorno' => false, 'msg' => 'Falha ao cadastrar'));
+          }
+        }else{
+          $atualizar = $this->cliente->atualizar($post['codigo_cli'], $array);
+          if ($atualizar) {
+            echo json_encode(array('retorno' => true, 'msg' => 'Cliente atualizado com sucesso!'));
+          } else {
+            echo json_encode(array('retorno' => false, 'msg' => 'Falha ao atualizar'));
+          }
+        }
+      } else {
+        echo json_encode(array('retorno' => false, 'msg' => 'Dados obrigatórios do cliente incompletos'));
+      }
+    } else {
+      echo json_encode(array('retorno' => false, 'msg' => 'Cadastro vazio!'));
+    }
+  }
+
+  public function inativar(){
+		$this->load->model('clientes_model', 'cliente');
+		$post = $this->input->post();
+		if(!empty($post)){
+			$codigo = $post['codigo'];
+			$inativar = $this->cliente->inativar($codigo);
+			if ($inativar){
+				echo json_encode(array('retorno' => true, 'msg' => 'Cliente excluído com sucesso!'));
+			}else{
+				echo json_encode(array('retorno' => false, 'msg' => 'Falha ao excluir o cliente!'));
+			}
+		}
+	}
+
+	public function buscar(){
+		$this->load->model('clientes_model', 'cliente');
+		$post = $this->input->post();
+		if(!empty($post)){
+			$codigo = $post['codigo'];
+			$cliente = $this->cliente->buscar($codigo);
+			if ($cliente){
+				echo json_encode(array('retorno' => true, 'dados' => $cliente[0]));
+			}else{
+				echo json_encode(array('retorno' => false, 'msg' => 'Falha ao excluir o cliente!'));
+			}
+		}
+	}
 }

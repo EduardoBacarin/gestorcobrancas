@@ -16,41 +16,50 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 // ------------------------------------------------------------------------
 
-if ( ! function_exists('converte_resenha_base64')){
-  function converte_resenha_base64($data, $nome_imagem){
-      if (preg_match('/^data:image\/octet-stream;base64,/', $data, $type)) {
-          $data = substr($data, strpos($data, ',') + 1);
-          $type = 'png'; // jpg, png, gif
-
-          if (!in_array($type, [ 'jpg', 'jpeg', 'gif', 'png' ])) {
-              throw new \Exception('invalid image type');
-          }
-          $data = str_replace( ' ', '+', $data );
-          $data = base64_decode($data);
-
-          if ($data === false) {
-              throw new \Exception('base64_decode failed');
-          }
-      } else {
-          throw new \Exception('did not match data URI with image data');
-      }
-
-      if(!is_dir('assets/resenhas/')){
-          mkdir('assets/resenhas/');
-      }
-
-      file_put_contents('assets/resenhas/'.$nome_imagem.'_' .  time() . '.'.$type, $data);
-      return 'assets/resenhas/'.$nome_imagem.'_' .  time() . '.'.$type;
-  }
+if (!function_exists('mask')) {
+    function mask($val, $mascara)
+    {
+        $mask = '';
+        switch ($mascara){
+            case 'documento': strlen($val) == 14 ? $mask = '##.###.###/####-##' : $mask = '###.###.###-##'; break;
+            case 'telefone': strlen($val) == 10 ? $mask = '(##) ####-####' : $mask = '(##) #####-####'; break;
+            case 'cep': $mask = '#####-###';break;
+            case 'data': $mask = '##/##/####';break;
+        };
+        
+        $maskared = '';
+        $k = 0;
+        for ($i = 0; $i <= strlen($mask) - 1; $i++) {
+            if ($mask[$i] == '#') {
+                if (isset($val[$k]))
+                    $maskared .= $val[$k++];
+            } else {
+                if (isset($mask[$i]))
+                    $maskared .= $mask[$i];
+            }
+        }
+        return $maskared;
+    }
 }
 
-if(!function_exists('formata_string')){
+
+if (!function_exists('limitaTexto')) {
+    function limitaTexto($str, $tamanho)
+    {
+        if (strlen($str) > $tamanho){
+            $str = substr($str, 0, $tamanho) . '...';
+        }
+        return $str;
+    }
+}
+
+if (!function_exists('formata_string')) {
     function formata_string($value, $tipo)
     {
-        $CI =& get_instance();
+        $CI = &get_instance();
         $CI->load->library('sanitizer');
 
-        switch ($tipo){
+        switch ($tipo) {
             case 'email':
                 $retorno = $CI->sanitizer->email($value);
                 $retorno = mb_strtolower($retorno);
