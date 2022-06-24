@@ -70,7 +70,7 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
       <a href="<?= base_url('dashboard') ?>" class="brand-link logo-switch">
-        <img src="<?= base_url('assets/svg/logo_minimal.svg') ?>" alt="GCobrança" class="brand-image-xl logo-xs svg-branco" style="left: 5px;">
+        <img src="<?= base_url('assets/svg/logo_minimal.svg') ?>" alt="GCobrança" class="brand-image-xl logo-xs svg-branco" style="left: 15px;">
         <img src="<?= base_url('assets/svg/logo_full.svg') ?>" alt="GCobrança" class="brand-image-xs logo-xl svg-branco" style="left: 50px; top: 7px;">
       </a>
 

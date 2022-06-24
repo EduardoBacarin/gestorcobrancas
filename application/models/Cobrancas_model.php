@@ -30,6 +30,16 @@ class Cobrancas_model extends CI_Model
 		}
 	}
 
+	public function insere_parcela($dados)
+	{
+		$this->db->insert("parcelas_cobranca", $dados);
+		if ($this->db->insert_id() >= 1) {
+			return $this->db->insert_id();
+		} else {
+			return false;
+		}
+	}
+
 	public function atualizar($codigo, $dados)
 	{
 		$this->db->set($dados);
@@ -37,6 +47,19 @@ class Cobrancas_model extends CI_Model
 		$this->db->where("codigo_cob", $codigo);
 
 		if ($this->db->update("cobrancas")) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function atualizar_parcela($codigo, $dados)
+	{
+		$this->db->set($dados);
+
+		$this->db->where("codigo_par", $codigo);
+
+		if ($this->db->update("parcelas_cobranca")) {
 			return true;
 		} else {
 			return false;
@@ -56,14 +79,17 @@ class Cobrancas_model extends CI_Model
 		}
 	}
 
-	public function listar($codigo_usu)
+	public function listar($codigo_usu, $limit, $offset, $mes, $ano)
 	{
 		$this->db->select("*");
-		$this->db->from("cobranca");
-		$this->db->join("cliente", "cliente.codigo_cli = cobranca.codigo_cli", 'inner');
-		$this->db->join("parcelas_cobranca", "parcelas_cobranca.codigo_cob = cobranca.codigo_cob", 'inner');
-		$this->db->where("cobranca.ativo_cob", true);
-		$this->db->where("cobranca.codigo_usu", $codigo_usu);
+		$this->db->from("parcelas_cobranca");
+		$this->db->join("cobrancas", "cobrancas.codigo_cob = parcelas_cobranca.codigo_cob", 'inner');
+		$this->db->join("cliente", "cliente.codigo_cli = cobrancas.codigo_cli", 'inner');
+		$this->db->where("cobrancas.ativo_cob", true);
+		$this->db->where("MONTH(parcelas_cobranca.datapagamento_par)", $mes);
+		$this->db->where("YEAR(parcelas_cobranca.datapagamento_par)", $ano);
+		$this->db->where("cobrancas.codigo_usu", $codigo_usu);
+        $this->db->limit($limit, $offset);
 		$query = $this->db->get();
 
 		if ($query->num_rows() >= 1) {
@@ -76,9 +102,9 @@ class Cobrancas_model extends CI_Model
 	public function contar($codigo_usu)
 	{
 		$this->db->select("COUNT(codigo_cob)");
-		$this->db->from("cobranca");
-		$this->db->where("cobranca.codigo_usu", $codigo_usu);
-		$this->db->where("cobranca.ativo_cob", true);
+		$this->db->from("cobrancas");
+		$this->db->where("cobrancas.codigo_usu", $codigo_usu);
+		$this->db->where("cobrancas.ativo_cob", true);
 		$total = $this->db->count_all_results();
 
 		if ($this->db->count_all_results() >= 1) {
@@ -91,10 +117,10 @@ class Cobrancas_model extends CI_Model
 	public function buscar($codigo_cob)
 	{
 		$this->db->select("*");
-		$this->db->from("cobranca");
+		$this->db->from("cobrancas");
 		$this->db->join("parcelas_cobranca", "parcelas_cobranca.codigo_cob = cobranca.codigo_cob", 'inner');
-		$this->db->where("codigo_cob", $codigo_cob);
-		$this->db->where("ativo_cob", true);
+		$this->db->where("cobrancas.codigo_cob", $codigo_cob);
+		$this->db->where("cobrancas.ativo_cob", true);
 		$this->db->limit(1);
 		$query = $this->db->get();
 

@@ -53,6 +53,26 @@ if (!function_exists('limitaTexto')) {
     }
 }
 
+if (!function_exists('meses')) {
+    function meses($mes)
+    {
+        switch ($mes){
+            case 1: return ['Janeiro', '01']; break;
+            case 2: return ['Fevereiro', '02']; break;
+            case 3: return ['Março', '03']; break;
+            case 4: return ['Abril', '04']; break;
+            case 5: return ['Maio', '05']; break;
+            case 6: return ['Junho', '06']; break;
+            case 7: return ['Julho', '07']; break;
+            case 8: return ['Agosto', '08']; break;
+            case 9: return ['Setembro', '09']; break;
+            case 10: return ['Outubro', '10']; break;
+            case 11: return ['Novembro', '11']; break;
+            case 12: return ['Dezembro', '12']; break;
+        }
+    }
+}
+
 if (!function_exists('formata_string')) {
     function formata_string($value, $tipo)
     {

@@ -10,12 +10,12 @@
       </div>
       <div class="modal-body">
         <form id="formModalCadastrarCobranca" novalidate="novalidate" enctype="multipart/form-data">
-          <input type="hidden" id="codigo_cli" name="codigo_cli" value="0">
+          <input type="hidden" id="codigo_cob" name="codigo_cob" value="0">
           <div class="card-body">
             <div class="row">
               <div class="col-md-4">
                 <div class="form-group">
-                  <?php $campo = 'nome_cli'; ?>
+                  <?php $campo = 'codigo_cli'; ?>
                   <label for="<?= $campo ?>">Cliente: </label>
                   <select class="selectpicker custom-select form-control" id="<?= $campo ?>" name="<?= $campo ?>" data-live-search="true">
                     <option value="" selected>Selecione um Cliente</option>
@@ -48,21 +48,16 @@
                   <input type="number" class="form-control" id="<?= $campo ?>" name="<?= $campo ?>" max="36" min="1" value="1">
                 </div>
               </div>
-              <div class="col-md-3">
-                <div class="form-group">
-                  <?php $campo = 'total_cob'; ?>
-                  <label for="<?= $campo ?>">Valor da Dívida: </label>
-                  <input type="text" class="form-control money" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="0,00">
-                </div>
-              </div>
               <div class="col-md-2">
+                <?php $campo = 'total_cob'; ?>
                 <div class="form-group">
-                  <?php $campo = 'tipojuros_cob'; ?>
-                  <label for="<?= $campo ?>">Tipo de Juros: </label>
-                  <select class="selectpicker custom-select form-control" id="<?= $campo ?>" name="<?= $campo ?>">
-                    <option value="1" selected>Juros Simples</option>
-                    <option value="2">Juros Composto</option>
-                  </select>
+                  <label for="<?= $campo ?>">Valor da Dívida: </label>
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">R$</div>
+                    </div>
+                    <input type="text" class="form-control money" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="0,00">
+                  </div>
                 </div>
               </div>
               <div class="col-md-2">
@@ -79,11 +74,28 @@
                   <input type="number" class="form-control" id="<?= $campo ?>" name="<?= $campo ?>" max="28" min="1" value="1" data-toggle="tooltip" data-placement="top" title="Dia final para pagamento, juros correrá a partir deste dia">
                 </div>
               </div>
+              <div class="col-md-1">
+                <div class="form-group">
+                  <?php $campo = 'taxa_cob'; ?>
+                  <label for="<?= $campo ?>">Taxa: </label>
+                  <input type="text" class="form-control percent" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="0,00%">
+                </div>
+              </div>
               <div class="col-md-2">
                 <div class="form-group">
-                  <?php $campo = 'juros_cob'; ?>
-                  <label for="<?= $campo ?>">Taxa de Juros: </label>
+                  <?php $campo = 'taxavencimento_cob'; ?>
+                  <label for="<?= $campo ?>">Taxa Após Vencimento: </label>
                   <input type="text" class="form-control percent" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="0,00%">
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <?php $campo = 'tipojuros_cob'; ?>
+                  <label for="<?= $campo ?>">Tipo de Taxa: </label>
+                  <select class="selectpicker custom-select form-control" id="<?= $campo ?>" name="<?= $campo ?>">
+                    <option value="1" selected>Juros Simples</option>
+                    <option value="2">Juros Composto</option>
+                  </select>
                 </div>
               </div>
             </div>
