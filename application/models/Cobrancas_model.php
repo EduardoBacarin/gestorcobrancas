@@ -82,12 +82,13 @@ class Cobrancas_model extends CI_Model
 	public function listar($codigo_usu, $limit, $offset, $mes, $ano)
 	{
 		$this->db->select("*");
-		$this->db->from("parcelas_cobranca");
-		$this->db->join("cobrancas", "cobrancas.codigo_cob = parcelas_cobranca.codigo_cob", 'inner');
+		$this->db->from("cobrancas");
 		$this->db->join("cliente", "cliente.codigo_cli = cobrancas.codigo_cli", 'inner');
+		$this->db->join("cidades", "cidades.codigo_cid = cliente.codigo_cid", 'inner');
+		$this->db->join("estados", "estados.codigo_est = cidades.codigo_est", 'inner');
 		$this->db->where("cobrancas.ativo_cob", true);
-		$this->db->where("MONTH(parcelas_cobranca.datapagamento_par)", $mes);
-		$this->db->where("YEAR(parcelas_cobranca.datapagamento_par)", $ano);
+		$this->db->where("MONTH(cobrancas.datacadastro_cob)", $mes);
+		$this->db->where("YEAR(cobrancas.datacadastro_cob)", $ano);
 		$this->db->where("cobrancas.codigo_usu", $codigo_usu);
         $this->db->limit($limit, $offset);
 		$query = $this->db->get();
@@ -96,6 +97,42 @@ class Cobrancas_model extends CI_Model
 			return $query->result();
 		} else {
 			return false;
+		}
+	}
+
+	public function listar_parcelas($codigo_usu, $limit, $offset, $cobranca)
+	{
+		$this->db->select("*");
+		$this->db->from("parcelas_cobranca");
+		$this->db->join("cobrancas", "cobrancas.codigo_cob = parcelas_cobranca.codigo_cob", 'inner');
+		$this->db->join("cliente", "cliente.codigo_cli = cobrancas.codigo_cli", 'inner');
+		$this->db->join("cidades", "cidades.codigo_cid = cliente.codigo_cid", 'inner');
+		$this->db->join("estados", "estados.codigo_est = cidades.codigo_est", 'inner');
+		$this->db->where("cobrancas.ativo_cob", true);
+		$this->db->where("cobrancas.codigo_usu", $codigo_usu);
+		$this->db->where("parcelas_cobranca.codigo_cob", $cobranca);
+        $this->db->limit($limit, $offset);
+		$query = $this->db->get();
+
+		if ($query->num_rows() >= 1) {
+			return $query->result();
+		} else {
+			return false;
+		}
+	}
+
+	public function contar_parcelas($cobranca)
+	{
+		$this->db->select("COUNT(codigo_cob)");
+		$this->db->from("parcelas_cobranca");
+		$this->db->where("parcelas_cobranca.ativo_par", true);
+		$this->db->where("parcelas_cobranca.codigo_cob", $cobranca);
+		$total = $this->db->count_all_results();
+
+		if ($this->db->count_all_results() >= 1) {
+			return $total;
+		} else {
+			return 0;
 		}
 	}
 

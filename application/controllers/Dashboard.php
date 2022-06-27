@@ -18,8 +18,13 @@ class Dashboard extends CI_Controller{
   }
 
   public function index(){
+
+    $data['cobrancas'] = 25;
+    $data['atrasados'] = 10;
+    $data['pagam_hoje'] = 3;
+    $data['lucro'] = number_format(1500.00, 2, ',', '.');
     $this->load->view('estrutura/topo');
-    $this->load->view('02_dashboard/dashboard');
+    $this->load->view('02_dashboard/dashboard', $data);
     $this->load->view('estrutura/rodape');
   }
 

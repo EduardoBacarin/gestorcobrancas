@@ -33,6 +33,7 @@ class Cobranca extends CI_Controller
     $this->load->view('estrutura/topo', $topo);
     $this->load->view('04_cobrancas/lista');
     $this->load->view('04_cobrancas/modal_cadastro', $data);
+    $this->load->view('04_cobrancas/modal_parcelas');
     $this->load->view('estrutura/rodape', $rodape);
   }
 
@@ -49,6 +50,83 @@ class Cobranca extends CI_Controller
       $ano    = $post['ano_selecionado'];
       $dados = $this->cobrancas->listar($this->session->userdata('usuario')['codigo_usu'], $limit, $page, $mes, $ano);
       $total = $this->cobrancas->contar($this->session->userdata('usuario')['codigo_usu'], $mes);
+
+      if (!empty($dados)) {
+        $total_registros = $total;
+        $retorno_dados = [];
+        $contador = 0;
+        foreach ($dados as $dt) {
+
+          $contador++;
+
+
+          $menu = '<div class="btn-group">
+                    <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">Ações </button>
+                    <div class="dropdown-menu">
+                      <a class="dropdown-item item-verparcelas" data-codigo="' . $dt->codigo_cob . '"> <i class="fa-solid fa-magnifying-glass-dollar" style="color: green"></i> Ver Parcelas</a>
+                      <a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_cob . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>
+                    </div>
+                  </div>';
+
+          switch ($dt->tipocobranca_cob) {
+            case 1:
+              $tipo = 'Mensal';
+              break;
+            case 2:
+              $tipo = 'Diário';
+              break;
+            default:
+              $tipo = 'Diário';
+              break;
+          }
+
+          $array = array(
+            $dt->codigo_cob,
+            limitaTexto($dt->nome_cli, 40),
+            $dt->nome_cid . '/' . $dt->uf_est,
+            $dt->qtdparcelas_cob,
+            $dt->taxa_cob . '%',
+            $tipo,
+            'R$' . number_format($dt->totalcomjuros_cob, 2, ',', '.'),
+            'R$' . number_format($dt->total_cob, 2, ',', '.'),
+            'R$' . number_format($dt->lucro_cob, 2, ',', '.'),
+            $menu,
+          );
+          array_push($retorno_dados, $array);
+        }
+
+        $retorno = array(
+          'recordsTotal' => $total_registros,
+          'recordsFiltered' => $total_registros,
+          'data' => $retorno_dados,
+        );
+
+        echo json_encode($retorno);
+      } else {
+        $retorno = array(
+          'recordsTotal' => 0,
+          'recordsFiltered' => 0,
+          'data' => [],
+        );
+
+        echo json_encode($retorno);
+      }
+    }
+  }
+
+  public function listar_parcelas()
+  {
+    $this->load->model('cobrancas_model', 'cobrancas');
+    $post = $this->input->get();
+
+    if (!empty($post)) {
+
+      $page       = $post['start'];
+      $limit      = $post['length'];
+      $q          = $post['search']['value'];
+      $cobranca    = $post['cobranca'];
+      $dados = $this->cobrancas->listar_parcelas($this->session->userdata('usuario')['codigo_usu'], $limit, $page, $cobranca);
+      $total = $this->cobrancas->contar_parcelas($cobranca);
 
       if (!empty($dados)) {
         $total_registros = $total;
@@ -103,15 +181,14 @@ class Cobranca extends CI_Controller
           $restante = $dt->total_cob - $dt->valorpago_par;
           $restante = $restante < 0 ? 0 : $restante;
           $array = array(
-            $contador,
+            $dt->codigo_par,
             limitaTexto($dt->nome_cli, 40),
             'R$' . number_format($dt->total_cob, 2, ',', '.'),
-            'R$' . (!empty($dt->valorpago_par) ? number_format($dt->valorpago_par, 2, ',', '.') : number_format($dt->valor_par, 2, ',', '.')),
-            'R$' . number_format($restante, 2, ',', '.'),
+            'R$' . number_format($dt->valor_par, 2, ',', '.'),
+            $dt->parcela_par . ' de ' . $dt->qtdparcelas_cob,
             date('d/m/Y', strtotime($dt->datavencimento_par)),
             $status,
-            $dt->taxa_cob . '%',
-            'R$' . (!empty($dt->lucrofinal_par) ? number_format($dt->lucrofinal_par, 2, ',', '.') : number_format($dt->lucro_par, 2, ',', '.')),
+            'R$' . number_format($dt->lucro_par, 2, ',', '.'),
             $menu,
           );
           array_push($retorno_dados, $array);
@@ -141,40 +218,96 @@ class Cobranca extends CI_Controller
     $this->load->model('cobrancas_model', 'cobrancas');
     $post = $this->input->post();
     $date = new DateTime();
+
+    /* PAREI AQUI ------ O VALOR DA PARCELA VEM VAZIO QUANDO SELECIONADO OPÇAO MENSAL E COBRANÇA POR VALOR DE PARCELA */
     if (!empty($post)) {
       if (!empty($post['codigo_cli'])) {
+        $valoremprestado = number_format(formata_string($post['total_cob'], 'money'), 2, '.', '');
+
+        if ($post['tipocobranca_cob'] == 2) {
+          //DIARIO
+          if ($post['tipocalculo_cob'] == 1) {
+            //PARCELA INFORMADA
+            $valor_parcela = number_format(formata_string($post['valorparcela_cob'], 'money'), 2, '.', '');
+            $valorfinal = number_format($valor_parcela * $post['qtdparcelas_cob'], 2, '.', '');
+            $taxadejuros = ($valorfinal - $valoremprestado) / ($valoremprestado * 1) * 100;
+            $taxadejuros = number_format($taxadejuros, 2, '.', '');
+            $tipocalculo = 1;
+          } else {
+            //JUROS INFORMADO
+            $taxadejuros = formata_string($post['taxa_cob'], 'float');
+            $valorjuros = number_format($valoremprestado * ($taxadejuros/100), 2, '.', '');
+            $valorfinal = number_format($valoremprestado + $valorjuros, 2, '.', '');
+            $valor_parcela = number_format($valorfinal / $post['qtdparcelas_cob'], 2, '.', '');
+            $tipocalculo = 2;
+          }
+        } else {
+          //MENSAL
+          if ($post['tipocalculo_cob_mensal'] == 1) {
+            //PARCELA INFORMADA
+            $valor_parcela = number_format(formata_string($post['valorparcela_cob'], 'money'), 2, '.', '');
+              echo json_encode($post);exit;
+            $valorfinal = number_format($valor_parcela * $post['qtdparcelas_cob'], 2, '.', '');
+            $taxadejuros = ($valorfinal - $valoremprestado) / ($valoremprestado * 1) * 100;
+            $taxadejuros = number_format($taxadejuros, 2, '.', '');
+            $tipocalculo = 1;
+            $tipocalculo = 1;
+            echo json_encode($valorfinal);exit;
+          } else {
+            //JUROS INFORMADO
+            $taxadejuros = formata_string($post['taxa_cob'], 'float');
+            $valorjuros = number_format($valoremprestado * ($taxadejuros/100), 2, '.', '');
+            $valorfinal = number_format($valoremprestado + $valorjuros, 2, '.', '');
+            $valor_parcela = number_format($valorfinal / $post['qtdparcelas_cob'], 2, '.', '');
+            $tipocalculo = 2;
+          }
+        }
+
+        $lucro = $valorfinal - $valoremprestado;
+        $lucro_parcela = $lucro / $post['qtdparcelas_cob'];
         $array = [
           'codigo_usu'          => $this->session->userdata('usuario')['codigo_usu'],
           'codigo_cli'          => formata_string($post['codigo_cli'], 'numeric'),
           'total_cob'           => number_format(formata_string($post['total_cob'], 'money'), 2, '.', ''),
-          'totalcomjuros_cob'   => number_format(formata_string($post['totalcomjuros'], 'money'), 2, '.', ''),
-          'valorparcela_cob'    => number_format(formata_string($post['valorparcela'], 'money'), 2, '.', ''),
-          'taxa_cob'            => formata_string($post['taxa_cob'], 'float'),
+          'totalcomjuros_cob'   => number_format(formata_string($valorfinal, 'money'), 2, '.', ''),
+          'valorparcela_cob'    => $valor_parcela,
+          'taxa_cob'            => $taxadejuros,
           'diacobranca_cob'     => formata_string($post['diacobranca_cob'], 'numeric'),
           'dialimite_cob'       => formata_string($post['dialimite_cob'], 'numeric'),
           'tipojuros_cob'       => formata_string($post['tipojuros_cob'], 'numeric'),
+          'tipocalculo_cob'     => $tipocalculo,
+          'tipocobranca_cob'    => $post['tipocobranca_cob'],
           'taxavencimento_cob'  => formata_string($post['taxavencimento_cob'], 'float'),
-          'lucro_cob'           => number_format($post['valorlucro'], 2, '.', ''),
+          'lucro_cob'           => number_format($lucro, 2, '.', ''),
           'qtdparcelas_cob'     => formata_string($post['qtdparcelas_cob'], 'numeric'),
           'datacadastro_cob'    => $date->format('Y-m-d H:i:s'),
         ];
+        echo json_encode($array);exit;
 
         if ($post['codigo_cob'] == 0) {
           $inserir = $this->cobrancas->inserir($array);
           for ($i = 0; $i < $post['qtdparcelas_cob']; $i++) {
-            $datapagamento = new DateTime(date("Y-m-" . $post['diacobranca_cob']));
-            $datapagamento->modify('+' . $i . ' months');
+            if ($post['tipocobranca_cob'] == 1) {
+              $datapagamento = new DateTime(date("Y-m-" . $post['diacobranca_cob']));
+              $datapagamento->modify('+' . $i . ' months');
 
-            $datavencimento = new DateTime(date("Y-m-" . $post['dialimite_cob']));
-            $datavencimento->modify('+' . $i . ' months');
-            $lucro = number_format(($post['valorlucro'] / $post['qtdparcelas_cob']), 2, '.', '');
+              $datavencimento = new DateTime(date("Y-m-" . $post['dialimite_cob']));
+              $datavencimento->modify('+' . $i . ' months');
+            } else {
+              $datapagamento = new DateTime(date("Y-m-d"));
+              $datapagamento->modify('+' . $i . ' days');
+
+              $datavencimento = new DateTime(date("Y-m-d"));
+              $datavencimento->modify('+' . $i . ' days');
+            }
 
             $array_parcela = [
               'codigo_cob'          => $inserir,
-              'valor_par'           => $post['valorparcela'],
+              'codigo_cli'          => formata_string($post['codigo_cli'], 'numeric'),
+              'valor_par'           => $valor_parcela,
               'datapagamento_par'   => $datapagamento->format('Y-m-d H:i:s'),
               'datavencimento_par'  => $datavencimento->format('Y-m-d H:i:s'),
-              'lucro_par'           => $lucro,
+              'lucro_par'           => number_format($lucro_parcela, 2, '.', ''),
               'parcela_par'         => $i + 1,
               'status_par'          => 1,
               'ativo_par'           => 1,

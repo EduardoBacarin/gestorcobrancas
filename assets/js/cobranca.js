@@ -1,6 +1,6 @@
 var base_url = $("#base_url").val();
 var avisos = "Obrigatório."
-var tabela_cobrancas;
+var tabela_cobrancas, tabela_parcelas;
 var mes_selecionado = $('#mes_selecionado').val();
 var ano_selecionado = $('#ano_selecionado').val();
 
@@ -36,27 +36,27 @@ $(document).ready(function () {
     },
     {
       "width": "10%",
-      "name": "Total",
+      "name": "Cidade",
     },
     {
       "width": "10%",
-      "name": "Parcela"
+      "name": "Parcelas"
     },
     {
       "width": "10%",
-      "name": "Restante"
+      "name": "Taxa"
     },
     {
       "width": "10%",
-      "name": "Prazo"
-    },
-    {
-      "width": "10%",
-      "name": "Status"
+      "name": "Tipo"
     },
     {
       "width": "5%",
-      "name": "Taxa"
+      "name": "Total com Juros"
+    },
+    {
+      "width": "10%",
+      "name": "Emprestado"
     },
     {
       "width": "10%",
@@ -68,7 +68,7 @@ $(document).ready(function () {
     }
     ],
     "columnDefs": [{
-      "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8],
       "className": 'dt-body-nowrap'
     }],
 
@@ -173,7 +173,35 @@ $(document).ready(function () {
         }
       });
     });
+});
+$(document).on('change', 'input[type=radio][name=tipocobranca_cob]', function () {
+  if (this.value == 1) {
+    $('.divDiario').hide();
+    $('.divMensal').show();
+  } else if (this.value == 2) {
+    $('.divDiario').show();
+    $('.divMensal').hide();
+  }
+});
 
+$(document).on('change', 'input[type=radio][name=tipocalculo_cob]', function () {
+  if (this.value == 1) {
+    $('#valorparcela_cob_diario').prop('disabled', false);
+    $('#taxa_cob_diario').prop('disabled', true);
+  } else if (this.value == 2) {
+    $('#valorparcela_cob_diario').prop('disabled', true);
+    $('#taxa_cob_diario').prop('disabled', false);
+  }
+});
+
+$(document).on('change', 'input[type=radio][name=tipocalculo_cob_mensal]', function () {
+  if (this.value == 1) {
+    $('#valorparcela_cob_mensal').prop('disabled', false);
+    $('#taxa_cob_mensal').prop('disabled', true);
+  } else if (this.value == 2) {
+    $('#valorparcela_cob_mensal').prop('disabled', true);
+    $('#taxa_cob_mensal').prop('disabled', false);
+  }
 });
 
 $(document).on('change', '#codigo_cli', function () {
@@ -195,21 +223,6 @@ $(document).on('change', '#troca-ano', function () {
   $('#ano_selecionado').val($(this).find(':selected').val());
   ano_selecionado = $(this).find(':selected').val();
   tabela_cobrancas.draw();
-});
-
-
-$(document).on('blur', '#total_cob', function () {
-  $('#totaldivida').html('R$' + $(this).val());
-  calcula_juros();
-});
-
-$(document).on('change', '#qtdparcelas_cob', function () {
-  calcula_juros();
-});
-
-
-$(document).on('blur', '#taxa_cob', function () {
-  calcula_juros();
 });
 
 $(document).on('click', '#btn-modal-cadastro', function () {
@@ -308,7 +321,7 @@ $(document).on('click', '.item-pago', function () {
           if (data.return) {
             sucesso(data.msg);
             $('#modal-marcar-pago').modal('hide');
-            tabela_cobrancas.draw();
+            tabela_parcelas.draw();
             limpa_campos('modal-marcar-pago');
           } else {
             erro(data.msg);
@@ -355,48 +368,86 @@ $(document).on('click', '.item-excluir', function () {
   })
 });
 
+
+
+$(document).on('click', '.item-verparcelas', function () {
+  var nome = $(this).data('nome');
+  var codigo = $(this).data('codigo');
+  $('#modal-lista-parcelas').modal('show');
+
+  if ($.fn.DataTable.isDataTable('#tabela-parcelas')) {
+    tabela_parcelas.destroy();
+  }
+  tabela_parcelas = $("#tabela-parcelas").DataTable({
+    "ordering": false,
+    "serverSide": true,
+    "aaSorting": [],
+    "order": [],
+    "filter": false,
+    "lengthMenu": [
+      [10, 50, 75, 100],
+      ['10', '50', '75', '100']
+    ],
+    "processing": true,
+    "language": {
+      "url": '//cdn.datatables.net/plug-ins/1.12.1/i18n/pt-BR.json'
+    },
+    "ajax": {
+      url: base_url + "cobranca/listar_parcelas/",
+      'data': function (data) {
+        data.cobranca = codigo;
+      }
+    },
+    "columns": [{
+      "width": "5%",
+      "name": "Posição"
+    },
+    {
+      "width": "15%",
+      "name": "Cliente"
+    },
+    {
+      "width": "10%",
+      "name": "Cidade",
+    },
+    {
+      "width": "10%",
+      "name": "Parcelas"
+    },
+    {
+      "width": "10%",
+      "name": "Taxa"
+    },
+    {
+      "width": "10%",
+      "name": "Taxa"
+    },
+    {
+      "width": "10%",
+      "name": "Tipo"
+    },
+    {
+      "width": "5%",
+      "name": "Total com Juros"
+    },
+    {
+      "width": "10%",
+      "name": "Emprestado"
+    },
+    ],
+    "columnDefs": [{
+      "targets": [0, 1, 2, 3, 4, 5, 6, 7],
+      "className": 'dt-body-nowrap'
+    }],
+
+  });
+});
+
 function limpa_campos(form) {
   $('#' + form).trigger("reset");
   $('#' + form).formValidation(options);
   $('#' + form).data('formValidation').resetForm();
 };
-
-function calcula_juros() {
-
-  var valortotal = $('#total_cob').val();
-  var juros = $('#taxa_cob').val();
-  var parcelas = parseFloat($('#qtdparcelas_cob').val());
-
-  valortotal = valortotal.split('.').join("");
-  valortotal = parseFloat(valortotal.replace(',', '.'));
-  juros = parseFloat(juros.split('%').join(""));
-
-
-  juros = juros / 100;
-  var valorjuros = valortotal * juros;
-  var jurosaodia = valorjuros / 30;
-  valorjuros = jurosaodia * (30 * parcelas);
-  var montante = valorjuros + valortotal;
-  var valorparcela = montante / parcelas;
-
-
-  montante = parseFloat(montante).toFixed(2);
-  valorparcela = parseFloat(valorparcela).toFixed(2)
-  valorjuros = parseFloat(valorjuros).toFixed(2);
-  jurosaodia = parseFloat(jurosaodia).toFixed(2);
-  var formata_montante = mascaraValor(montante);
-  var formata_valorjuros = mascaraValor(valorjuros);
-  var formata_valorparcela = mascaraValor(valorparcela);
-
-  $('#totalcomjuros').val(montante);
-  $('#valorparcela').val(valorparcela);
-  $('#valorlucro').val(valorjuros);
-  $('#jurosaodia').val(jurosaodia);
-
-  $('#txttotaljuros').html('R$' + (formata_montante ? formata_montante : '0,00'));
-  $('#txtparcela').html('R$' + (formata_valorparcela ? formata_valorparcela : '0,00'));
-  $('#txtlucro').html('R$' + (formata_valorjuros ? formata_valorjuros : '0,00'));
-}
 
 function mascaraValor(valor) {
   valor = valor.toString().replace(/\D/g, "");

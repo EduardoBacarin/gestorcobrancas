@@ -92,20 +92,18 @@
                   <input type="number" class="form-control" id="<?= $campo ?>" name="<?= $campo ?>" max="28" min="1" value="1" data-toggle="tooltip" data-placement="top" title="Dia final para pagamento, juros correrá a partir deste dia">
                 </div>
               </div>
-              <div class="col-md-2">
+              <div class="col-md-1">
                 <div class="form-group">
-                  <?php $campo = 'valorparcela_cob'; ?>
-                  <input class="form-check-input" type="radio" name="tipocalculo_cob_mensal" id="tipocalculo-1" value="1" checked>
-                  <label for="<?= $campo ?>_mensal">Valor Parcela: </label>
-                  <input type="text" class="form-control money" id="<?= $campo ?>_mensal" name="<?= $campo ?>" placeholder="0,00">
+                  <?php $campo = 'taxa_cob'; ?>
+                  <label for="<?= $campo ?>">Taxa: </label>
+                  <input type="text" class="form-control percent taxa_cob" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="0,00%">
                 </div>
               </div>
               <div class="col-md-2">
                 <div class="form-group">
-                  <input class="form-check-input" type="radio" name="tipocalculo_cob_mensal" id="tipocalculo-2" value="2">
-                  <?php $campo = 'taxa_cob'; ?>
-                  <label for="<?= $campo ?>_mensal">Taxa: </label>
-                  <input type="text" class="form-control percent taxa_cob" id="<?= $campo ?>_mensal" name="<?= $campo ?>" placeholder="0,00%" disabled>
+                  <?php $campo = 'taxavencimento_cob'; ?>
+                  <label for="<?= $campo ?>">Taxa Após Vencimento: </label>
+                  <input type="text" class="form-control percent" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="0,00%">
                 </div>
               </div>
               <div class="col-md-2">
@@ -154,7 +152,50 @@
                 </div>
               </div>
             </div>
+            <div class="row">
+              <hr style="width: 40%">
+              <h3>Projeção</h3>
+              <hr style="width: 40%">
+            </div>
+            <div class="row mt-3">
+              <div class="col-md-3">
+                <div class="d-flex justify-content-center">
+                  <h5>Total da Dívida</h5>
+                </div>
+                <div class="d-flex justify-content-center">
+                  <span id="totaldivida">R$0,00</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="d-flex justify-content-center">
+                  <h5>Total c/ Juros</h5>
+                </div>
+                <div class="d-flex justify-content-center">
+                  <span id="txttotaljuros">R$0,00</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="d-flex justify-content-center">
+                  <h5>Valor da Parcela</h5>
+                </div>
+                <div class="d-flex justify-content-center">
+                  <span id="txtparcela">R$0,00</span>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="d-flex justify-content-center">
+                  <h5>Lucro</h5>
+                </div>
+                <div class="d-flex justify-content-center">
+                  <span id="txtlucro">R$0,00</span>
+                </div>
+              </div>
+            </div>
           </div>
+          <input type="hidden" id="totalcomjuros" name="totalcomjuros" value="0">
+          <input type="hidden" id="valorparcela" name="valorparcela" value="0">
+          <input type="hidden" id="valorlucro" name="valorlucro" value="0">
+          <input type="hidden" id="jurosaodia" name="jurosaodia" value="0">
           <div class="row">
             <div class="modal-footer justify-content-between">
               <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
