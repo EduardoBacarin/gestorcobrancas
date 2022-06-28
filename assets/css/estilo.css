@@ -2,6 +2,10 @@
     filter: invert(100%) sepia(0%) saturate(7466%) hue-rotate(44deg) brightness(101%) contrast(110%);
 }
 
+.juros{
+    font-size: 18px;
+}
+
 #divDesenho{
     width: 100%;
     position: relative;

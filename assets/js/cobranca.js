@@ -163,7 +163,7 @@ $(document).ready(function () {
         contentType: false,
         processData: false,
         success: function (data) {
-          if (data.retorno) {
+          if (data.return) {
             sucesso(data.msg);
             $('#modal-cadastra-cobranca').modal('hide');
             tabela_cobrancas.draw();
@@ -186,21 +186,11 @@ $(document).on('change', 'input[type=radio][name=tipocobranca_cob]', function ()
 
 $(document).on('change', 'input[type=radio][name=tipocalculo_cob]', function () {
   if (this.value == 1) {
-    $('#valorparcela_cob_diario').prop('disabled', false);
-    $('#taxa_cob_diario').prop('disabled', true);
+    $('#valorparcela_cob').prop('disabled', false);
+    $('#taxa_cob').prop('disabled', true);
   } else if (this.value == 2) {
-    $('#valorparcela_cob_diario').prop('disabled', true);
-    $('#taxa_cob_diario').prop('disabled', false);
-  }
-});
-
-$(document).on('change', 'input[type=radio][name=tipocalculo_cob_mensal]', function () {
-  if (this.value == 1) {
-    $('#valorparcela_cob_mensal').prop('disabled', false);
-    $('#taxa_cob_mensal').prop('disabled', true);
-  } else if (this.value == 2) {
-    $('#valorparcela_cob_mensal').prop('disabled', true);
-    $('#taxa_cob_mensal').prop('disabled', false);
+    $('#valorparcela_cob').prop('disabled', true);
+    $('#taxa_cob').prop('disabled', false);
   }
 });
 
@@ -240,7 +230,7 @@ $(document).on('click', '.item-editar', function () {
     data: { codigo: codigo },
     dataType: 'json',
     success: function (data) {
-      if (data.retorno) {
+      if (data.return) {
         $('#modal-cadastra-cobranca').modal('show');
       } else {
         erro(data.msg);
@@ -335,9 +325,9 @@ $(document).on('click', '.item-excluir', function () {
   var nome = $(this).data('nome');
   var codigo = $(this).data('codigo');
   Swal.fire({
-    title: 'Excluir Cliente',
+    title: 'Excluir Cobrança',
     icon: 'warning',
-    text: 'Deseja apagar o(a) cliente ' + nome + '?',
+    text: 'Deseja apagar esta cobrança?',
     showCancelButton: true,
     confirmButtonText: 'Apagar',
     cancelButtonText: 'Cancelar',
@@ -345,7 +335,7 @@ $(document).on('click', '.item-excluir', function () {
   }).then((result) => {
     if (result.isConfirmed) {
       $.ajax({
-        url: base_url + 'cliente/inativar',
+        url: base_url + 'cobranca/inativar',
         type: 'POST',
         data: {
           codigo: codigo
@@ -366,6 +356,39 @@ $(document).on('click', '.item-excluir', function () {
       });
     }
   })
+});
+
+
+$(document).on('click', '.item-jurosatraso', function () {
+  var codigo = $(this).data('codigo');
+
+  $.ajax({
+    url: base_url + 'cobranca/calcula_juros',
+    type: 'POST',
+    data: {
+      codigo: codigo
+    },
+    dataType: 'json',
+    success: function (data) {
+      if (data.return) {
+        console.log(data);
+        $('#modal-calcula-juros').modal('show');
+        $('#taxadejuros_parcela').text((parseFloat(data.juros.taxa_cobrada) * 100) + '%')
+        $('#valororiginal_parcela').text('R$ ' + parseFloat(data.juros.valor_parcela).toFixed(2));
+        $('#valorcomjuros_parcela').text('R$ ' + parseFloat(data.juros.valor_final).toFixed(2));
+        $('#diasatrasados_parcela').text(parseInt(data.juros.dias_atrasados) + ' dias');
+        $('#tipodejuros_parcela').text(data.juros.tipo_juros);
+
+      } else {
+        erro(data.msg);
+      }
+      tabela_cobrancas.draw();
+    },
+    error: function () {
+      erro('Erro ao executar, atualize e tente novamente.');
+    }
+
+  });
 });
 
 

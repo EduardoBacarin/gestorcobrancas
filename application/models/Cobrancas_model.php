@@ -155,9 +155,28 @@ class Cobrancas_model extends CI_Model
 	{
 		$this->db->select("*");
 		$this->db->from("cobrancas");
-		$this->db->join("parcelas_cobranca", "parcelas_cobranca.codigo_cob = cobranca.codigo_cob", 'inner');
+		$this->db->join("parcelas_cobranca", "parcelas_cobranca.codigo_cob = cobrancas.codigo_cob", 'inner');
 		$this->db->where("cobrancas.codigo_cob", $codigo_cob);
 		$this->db->where("cobrancas.ativo_cob", true);
+		$this->db->limit(1);
+		$query = $this->db->get();
+
+		// print_r($this->db->last_query());exit;
+
+		if ($query->num_rows() == 1) {
+			return $query->result();
+		} else {
+			return false;
+		}
+	}
+
+	public function buscar_parcela($codigo_par)
+	{
+		$this->db->select("*");
+		$this->db->from("parcelas_cobranca");
+		$this->db->join("cobrancas", "parcelas_cobranca.codigo_cob = cobrancas.codigo_cob", 'inner');
+		$this->db->where("parcelas_cobranca.codigo_par", $codigo_par);
+		$this->db->where("parcelas_cobranca.ativo_par", true);
 		$this->db->limit(1);
 		$query = $this->db->get();
 

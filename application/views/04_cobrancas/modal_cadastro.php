@@ -77,80 +77,52 @@
                 </div>
               </div>
             </div>
-            <div class="row divMensal">
+            <div class="row">
               <div class="col-md-2">
                 <div class="form-group">
+                  <?php $campo = 'valorparcela_cob'; ?>
+                  <input class="form-check-input" type="radio" name="tipocalculo_cob" id="tipocalculo-1" value="1" checked>
+                  <label for="<?= $campo ?>">Valor Parcela: </label>
+                  <input type="text" class="form-control money" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="0,00">
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <input class="form-check-input" type="radio" name="tipocalculo_cob" id="tipocalculo-2" value="2">
+                  <?php $campo = 'taxa_cob'; ?>
+                  <label for="<?= $campo ?>">Taxa: </label>
+                  <input type="text" class="form-control percent taxa_cob" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="0,00%" disabled>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <?php $campo = 'taxavencimento_cob'; ?>
+                  <label for="<?= $campo ?>">Taxa Após Vencimento: </label>
+                  <input type="text" class="form-control percent" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="0,00%">
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <?php $campo = 'tipojuros_cob'; ?>
+                  <label for="<?= $campo ?>">Tipo de Taxa: </label>
+                  <select class="selectpicker custom-select form-control" id="<?= $campo ?>" name="<?= $campo ?>">
+                    <option value="1" selected>Juros Simples</option>
+                    <option value="2">Juros Composto</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group divMensal">
                   <?php $campo = 'diacobranca_cob'; ?>
                   <label for="<?= $campo ?>">Dia de Cobrança: </label>
                   <input type="number" class="form-control" id="<?= $campo ?>" name="<?= $campo ?>" max="28" min="1" value="1" data-toggle="tooltip" data-placement="top" title="Dia combinado para o pagamento">
                 </div>
               </div>
               <div class="col-md-2">
-                <div class="form-group">
+                <div class="form-group divMensal">
                   <?php $campo = 'dialimite_cob'; ?>
                   <label for="<?= $campo ?>">Dia Limite: </label>
                   <input type="number" class="form-control" id="<?= $campo ?>" name="<?= $campo ?>" max="28" min="1" value="1" data-toggle="tooltip" data-placement="top" title="Dia final para pagamento, juros correrá a partir deste dia">
-                </div>
-              </div>
-              <div class="col-md-2">
-                <div class="form-group">
-                  <?php $campo = 'valorparcela_cob'; ?>
-                  <input class="form-check-input" type="radio" name="tipocalculo_cob_mensal" id="tipocalculo-1" value="1" checked>
-                  <label for="<?= $campo ?>_mensal">Valor Parcela: </label>
-                  <input type="text" class="form-control money" id="<?= $campo ?>_mensal" name="<?= $campo ?>" placeholder="0,00">
-                </div>
-              </div>
-              <div class="col-md-2">
-                <div class="form-group">
-                  <input class="form-check-input" type="radio" name="tipocalculo_cob_mensal" id="tipocalculo-2" value="2">
-                  <?php $campo = 'taxa_cob'; ?>
-                  <label for="<?= $campo ?>_mensal">Taxa: </label>
-                  <input type="text" class="form-control percent taxa_cob" id="<?= $campo ?>_mensal" name="<?= $campo ?>" placeholder="0,00%" disabled>
-                </div>
-              </div>
-              <div class="col-md-2">
-                <div class="form-group">
-                  <?php $campo = 'tipojuros_cob'; ?>
-                  <label for="<?= $campo ?>">Tipo de Taxa: </label>
-                  <select class="selectpicker custom-select form-control" id="<?= $campo ?>" name="<?= $campo ?>">
-                    <option value="1" selected>Juros Simples</option>
-                    <option value="2">Juros Composto</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="row divDiario" style="display: none;">
-              <div class="col-md-3">
-                <div class="form-group">
-                  <?php $campo = 'valorparcela_cob'; ?>
-                  <input class="form-check-input" type="radio" name="tipocalculo_cob" id="tipocalculo-1" value="1" checked>
-                  <label for="<?= $campo ?>_diario">Valor Parcela: </label>
-                  <input type="text" class="form-control money" id="<?= $campo ?>_diario" name="<?= $campo ?>" placeholder="0,00">
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="form-group">
-                  <input class="form-check-input" type="radio" name="tipocalculo_cob" id="tipocalculo-2" value="2">
-                  <?php $campo = 'taxa_cob'; ?>
-                  <label for="<?= $campo ?>_diario">Taxa: </label>
-                  <input type="text" class="form-control percent taxa_cob" id="<?= $campo ?>_diario" name="<?= $campo ?>" placeholder="0,00%" disabled>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="form-group">
-                  <?php $campo = 'taxavencimento_cob'; ?>
-                  <label for="<?= $campo ?>">Taxa Após Vencimento: </label>
-                  <input type="text" class="form-control percent" id="<?= $campo ?>_diario" name="<?= $campo ?>" placeholder="0,00%">
-                </div>
-              </div>
-              <div class="col-md-2">
-                <div class="form-group">
-                  <?php $campo = 'tipojuros_cob'; ?>
-                  <label for="<?= $campo ?>">Tipo de Taxa: </label>
-                  <select class="selectpicker custom-select form-control" id="<?= $campo ?>" name="<?= $campo ?>">
-                    <option value="1" selected>Juros Simples</option>
-                    <option value="2">Juros Composto</option>
-                  </select>
                 </div>
               </div>
             </div>

@@ -40,7 +40,7 @@
               <div class="inner">
                 <h3>R$ <?= $lucro ?></h3>
 
-                <p>Lucro</p>
+                <p>Lucro Total</p>
               </div>
               <div class="icon">
                 <i class="fa-solid fa-money-bill-trend-up"></i>
@@ -77,6 +77,35 @@
           </div>
           <!-- ./col -->
         </div>
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-info">
+              <div class="inner">
+                <h3><?= $cobrancas_mes ?></h3>
+
+                <p>Cobranças este mês</p>
+              </div>
+              <div class="icon">
+                <i class="fa-solid fa-file-invoice-dollar"></i>
+              </div>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3>R$ <?= $lucro_mes ?></h3>
+
+                <p>Lucro este mês</p>
+              </div>
+              <div class="icon">
+                <i class="fa-solid fa-money-bill-trend-up"></i>
+              </div>
+            </div>
+          </div>
+          <!-- ./col -->
       </div>
 
     </section>
