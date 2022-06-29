@@ -105,6 +105,16 @@
                 </p>
               </a>
             </li>
+            <?php if ($this->session->userdata('usuario')['nivel_usu'] == 1) { ?>          
+            <li class="nav-item">
+              <a href="<?= base_url('funcionario') ?>" class="nav-link">
+                <i class="fa-solid fa-user-tie ml-1"></i>
+                <p class="ml-2">
+                  Funcionários
+                </p>
+              </a>
+            </li>
+            <?php } ?>
           </ul>
         </nav>
         <!-- /.sidebar-menu -->

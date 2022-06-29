@@ -56,14 +56,13 @@ class Clientes_model extends CI_Model
 		}
 	}
 
-	public function listar($codigo_usu, $limit, $offset)
+	public function listar($limit, $offset)
 	{
 		$this->db->select("*");
 		$this->db->from("cliente");
 		$this->db->join("cidades", "cidades.codigo_cid = cliente.codigo_cid", 'left');
 		$this->db->join("estados", "estados.codigo_est = cidades.codigo_est", 'left');
 		$this->db->where("ativo_cli", true);
-		$this->db->where("codigo_usu", $codigo_usu);
         $this->db->limit($limit, $offset);
 		$query = $this->db->get();
 
@@ -76,11 +75,10 @@ class Clientes_model extends CI_Model
 		}
 	}
 
-	public function contar($codigo_usu)
+	public function contar()
 	{
 		$this->db->select("COUNT(codigo_cli)");
 		$this->db->from("cliente");
-		$this->db->where("cliente.codigo_usu", $codigo_usu);
 		$this->db->where("cliente.ativo_cli", true);
 		$this->db->order_by("cliente.nome", "ASC");
 		$total = $this->db->count_all_results();
@@ -92,14 +90,13 @@ class Clientes_model extends CI_Model
 		}
 	}
 
-	public function listar_todos($codigo_usu)
+	public function listar_todos()
 	{
 		$this->db->select("*");
 		$this->db->from("cliente");
 		$this->db->join("cidades", "cidades.codigo_cid = cliente.codigo_cid", 'left');
 		$this->db->join("estados", "estados.codigo_est = cidades.codigo_est", 'left');
 		$this->db->where("ativo_cli", true);
-		$this->db->where("codigo_usu", $codigo_usu);
 		$query = $this->db->get();
 
 		if ($query->num_rows() >= 1) {

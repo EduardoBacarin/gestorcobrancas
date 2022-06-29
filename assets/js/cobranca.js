@@ -107,35 +107,28 @@ $(document).ready(function () {
       qtdparcelas_cob: {
         validators: {
           notEmpty: {
-            message: 'O telefone do cliente é obrigatório.'
+            message: 'A quantidade de parcelas é obrigatória.'
           }
         }
       },
       total_cob: {
         validators: {
           notEmpty: {
-            message: 'O telefone do cliente é obrigatório.'
+            message: 'O valor da dívida é obrigatória.'
           }
         }
       },
       diacobranca_cob: {
         validators: {
           notEmpty: {
-            message: 'O telefone do cliente é obrigatório.'
+            message: 'O dia da cobrança é obrigatório'
           }
         }
       },
       dialimite_cob: {
         validators: {
           notEmpty: {
-            message: 'O telefone do cliente é obrigatório.'
-          }
-        }
-      },
-      taxa_cob: {
-        validators: {
-          notEmpty: {
-            message: 'O telefone do cliente é obrigatório.'
+            message: 'O dia limite de pagamento é obrigatório.'
           }
         }
       },
@@ -273,14 +266,14 @@ $(document).on('click', '.item-pago', function () {
       datapago_par: {
         validators: {
           notEmpty: {
-            message: 'O nome do cliente é obrigatório.'
+            message: 'A data de pagamento é obrigatória.'
           }
         }
       },
       valorpago_par: {
         validators: {
           notEmpty: {
-            message: 'O documento do cliente é obrigatório.'
+            message: 'O valor pago é obrigatório.'
           }
         }
       },

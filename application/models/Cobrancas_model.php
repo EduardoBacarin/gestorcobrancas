@@ -79,7 +79,7 @@ class Cobrancas_model extends CI_Model
 		}
 	}
 
-	public function listar($codigo_usu, $limit, $offset, $mes, $ano)
+	public function listar($limit, $offset, $mes, $ano)
 	{
 		$this->db->select("*");
 		$this->db->from("cobrancas");
@@ -89,7 +89,6 @@ class Cobrancas_model extends CI_Model
 		$this->db->where("cobrancas.ativo_cob", true);
 		$this->db->where("MONTH(cobrancas.datacadastro_cob)", $mes);
 		$this->db->where("YEAR(cobrancas.datacadastro_cob)", $ano);
-		$this->db->where("cobrancas.codigo_usu", $codigo_usu);
         $this->db->limit($limit, $offset);
 		$query = $this->db->get();
 
@@ -100,7 +99,7 @@ class Cobrancas_model extends CI_Model
 		}
 	}
 
-	public function listar_parcelas($codigo_usu, $limit, $offset, $cobranca)
+	public function listar_parcelas($limit, $offset, $cobranca)
 	{
 		$this->db->select("*");
 		$this->db->from("parcelas_cobranca");
@@ -109,7 +108,6 @@ class Cobrancas_model extends CI_Model
 		$this->db->join("cidades", "cidades.codigo_cid = cliente.codigo_cid", 'inner');
 		$this->db->join("estados", "estados.codigo_est = cidades.codigo_est", 'inner');
 		$this->db->where("cobrancas.ativo_cob", true);
-		$this->db->where("cobrancas.codigo_usu", $codigo_usu);
 		$this->db->where("parcelas_cobranca.codigo_cob", $cobranca);
         $this->db->limit($limit, $offset);
 		$query = $this->db->get();
@@ -136,11 +134,10 @@ class Cobrancas_model extends CI_Model
 		}
 	}
 
-	public function contar($codigo_usu)
+	public function contar()
 	{
 		$this->db->select("COUNT(codigo_cob)");
 		$this->db->from("cobrancas");
-		$this->db->where("cobrancas.codigo_usu", $codigo_usu);
 		$this->db->where("cobrancas.ativo_cob", true);
 		$total = $this->db->count_all_results();
 

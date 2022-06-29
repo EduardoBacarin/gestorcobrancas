@@ -29,7 +29,7 @@ class Cobranca extends CI_Controller
     $topo['css'] = [
       'assets/plugins/bootstrap-select-1.13.14/dist/css/bootstrap-select.min.css',
     ];
-    $data['clientes'] = $this->clientes->listar_todos($this->session->userdata('usuario')['codigo_usu']);
+    $data['clientes'] = $this->clientes->listar_todos();
     $this->load->view('estrutura/topo', $topo);
     $this->load->view('04_cobrancas/lista');
     $this->load->view('04_cobrancas/modal_cadastro', $data);
@@ -48,8 +48,8 @@ class Cobranca extends CI_Controller
       $q      = $post['search']['value'];
       $mes    = $post['mes_selecionado'];
       $ano    = $post['ano_selecionado'];
-      $dados = $this->cobrancas->listar($this->session->userdata('usuario')['codigo_usu'], $limit, $page, $mes, $ano);
-      $total = $this->cobrancas->contar($this->session->userdata('usuario')['codigo_usu'], $mes);
+      $dados = $this->cobrancas->listar($limit, $page, $mes, $ano);
+      $total = $this->cobrancas->contar($mes);
 
       if (!empty($dados)) {
         $total_registros = $total;
@@ -125,7 +125,7 @@ class Cobranca extends CI_Controller
       $limit      = $post['length'];
       $q          = $post['search']['value'];
       $cobranca    = $post['cobranca'];
-      $dados = $this->cobrancas->listar_parcelas($this->session->userdata('usuario')['codigo_usu'], $limit, $page, $cobranca);
+      $dados = $this->cobrancas->listar_parcelas($limit, $page, $cobranca);
       $total = $this->cobrancas->contar_parcelas($cobranca);
 
       if (!empty($dados)) {
@@ -145,9 +145,11 @@ class Cobranca extends CI_Controller
           $status_cod = 0;
           switch ($dt->status_par) {
             case 1:
-              if ($data_vencimento >= $hoje) {
+              if ($data_vencimento->format('Y-m-d') > $hoje->format('Y-m-d')) {
                 $status = '<i class="fa-regular fa-clock" style="color: orange"></i> <strong>Aguardando</strong>';
-              } else {
+              } else if ($data_vencimento->format('Y-m-d') == $hoje->format('Y-m-d')) {
+                $status = '<i class="fa-regular fa-clock" style="color: orange"></i> <strong>Vence Hoje</strong>';
+              }else {
                 $status = '<i class="fa-solid fa-circle-exclamation" style="color: red"></i> <strong>Atrasado</strong>';
                 $status_cod = 1;
                 $diffdias = $hoje->diff($data_vencimento)->days;

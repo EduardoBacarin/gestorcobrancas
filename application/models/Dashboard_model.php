@@ -131,4 +131,42 @@ class Dashboard_model extends CI_Model
 			return 0;
 		}
 	}
+
+
+	public function listar_vencidos($limit, $offset)
+	{
+		$this->db->select("*");
+		$this->db->from("parcelas_cobranca");
+		$this->db->join("cobrancas", "cobrancas.codigo_cob = parcelas_cobranca.codigo_cob", 'inner');
+		$this->db->join("cliente", "cliente.codigo_cli = cobrancas.codigo_cli", 'inner');
+		$this->db->join("cidades", "cidades.codigo_cid = cliente.codigo_cid", 'inner');
+		$this->db->join("estados", "estados.codigo_est = cidades.codigo_est", 'inner');
+		$this->db->where("parcelas_cobranca.datavencimento_par <", date('Y-m-d'));
+		$this->db->where("parcelas_cobranca.status_par", 1);
+		$this->db->where("cobrancas.ativo_cob", true);
+        $this->db->limit($limit, $offset);
+		$query = $this->db->get();
+
+		if ($query->num_rows() >= 1) {
+			return $query->result();
+		} else {
+			return false;
+		}
+	}
+
+	public function contar_vencidos()
+	{
+		$this->db->select("COUNT(codigo_cob)");
+		$this->db->from("parcelas_cobranca");
+		$this->db->where("parcelas_cobranca.datavencimento_par <", date('Y-m-d'));
+		$this->db->where("parcelas_cobranca.status_par", 1);
+		$this->db->where("parcelas_cobranca.ativo_par", true);
+		$total = $this->db->count_all_results();
+
+		if ($this->db->count_all_results() >= 1) {
+			return $total;
+		} else {
+			return 0;
+		}
+	}
 }

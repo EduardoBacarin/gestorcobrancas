@@ -7,7 +7,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * 
  **/
 
-class Cliente extends CI_Controller
+class Funcionario extends CI_Controller
 {
 
   public function __construct()
@@ -22,10 +22,10 @@ class Cliente extends CI_Controller
   public function index()
   {
 
-    $rodape['js'] = ['assets/js/cliente.js'];
+    $rodape['js'] = ['assets/js/funcionario.js'];
     $this->load->view('estrutura/topo');
-    $this->load->view('03_clientes/lista');
-    $this->load->view('03_clientes/modal_cadastro');
+    $this->load->view('05_funcionarios/lista');
+    $this->load->view('05_funcionarios/modal_cadastro');
     $this->load->view('estrutura/rodape', $rodape);
   }
 
