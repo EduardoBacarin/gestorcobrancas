@@ -4,11 +4,11 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Clientes <strong>GC</strong>obrança</h1>
+            <h1>Funcionários <strong>GC</strong>obrança</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Clientes</a></li>
+              <li class="breadcrumb-item"><a href="#">Funcionários</a></li>
             </ol>
           </div>
         </div>
@@ -21,7 +21,7 @@
       <!-- Default box -->
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Todos os Clientes</h3>
+          <h3 class="card-title">Todos os Funcionários</h3>
 
           <div class="card-tools">
             <button type="button" class="btn btn-info" id="btn-modal-cadastro">
@@ -30,14 +30,13 @@
           </div>
         </div>
         <div class="card-body">
-          <table id="tabela-clientes" class="table table-bordered table-hover dataTable dtr-inline">
+          <table id="tabela-funcionarios" class="table table-bordered table-hover dataTable dtr-inline">
             <thead>
               <th>#</th>
               <th>Nome</th>
               <th>Documento</th>
+              <th>E-Mail</th>
               <th>Telefone</th>
-              <th>Endereço</th>
-              <th>Cidade / UF</th>
               <th>Ações</th>
             </thead>
             <tbody>

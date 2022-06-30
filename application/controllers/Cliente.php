@@ -39,8 +39,8 @@ class Cliente extends CI_Controller
       $limit  = $post['length'];
       $q      = $post['search']['value'];
 
-      $dados = $this->clientes->listar($limit, $page);
-      $total = $this->clientes->contar();
+      $dados = $this->clientes->listar($limit, $page, $q);
+      $total = $this->clientes->contar($q);
 
       if (!empty($dados)) {
         $total_registros = $total;
@@ -118,14 +118,14 @@ class Cliente extends CI_Controller
           }
         }
 
-        if ($post['codigo_cli'] == 0){
+        if ($post['codigo_cli'] == 0) {
           $inserir = $this->cliente->inserir($array);
           if ($inserir) {
             echo json_encode(array('retorno' => true, 'msg' => 'Cliente cadastrado com sucesso!'));
           } else {
             echo json_encode(array('retorno' => false, 'msg' => 'Falha ao cadastrar'));
           }
-        }else{
+        } else {
           $atualizar = $this->cliente->atualizar($post['codigo_cli'], $array);
           if ($atualizar) {
             echo json_encode(array('retorno' => true, 'msg' => 'Cliente atualizado com sucesso!'));
@@ -141,31 +141,33 @@ class Cliente extends CI_Controller
     }
   }
 
-  public function inativar(){
-		$this->load->model('clientes_model', 'cliente');
-		$post = $this->input->post();
-		if(!empty($post)){
-			$codigo = $post['codigo'];
-			$inativar = $this->cliente->inativar($codigo);
-			if ($inativar){
-				echo json_encode(array('retorno' => true, 'msg' => 'Cliente excluído com sucesso!'));
-			}else{
-				echo json_encode(array('retorno' => false, 'msg' => 'Falha ao excluir o cliente!'));
-			}
-		}
-	}
+  public function inativar()
+  {
+    $this->load->model('clientes_model', 'cliente');
+    $post = $this->input->post();
+    if (!empty($post)) {
+      $codigo = $post['codigo'];
+      $inativar = $this->cliente->inativar($codigo);
+      if ($inativar) {
+        echo json_encode(array('retorno' => true, 'msg' => 'Cliente excluído com sucesso!'));
+      } else {
+        echo json_encode(array('retorno' => false, 'msg' => 'Falha ao excluir o cliente!'));
+      }
+    }
+  }
 
-	public function buscar(){
-		$this->load->model('clientes_model', 'cliente');
-		$post = $this->input->post();
-		if(!empty($post)){
-			$codigo = $post['codigo'];
-			$cliente = $this->cliente->buscar($codigo);
-			if ($cliente){
-				echo json_encode(array('retorno' => true, 'dados' => $cliente[0]));
-			}else{
-				echo json_encode(array('retorno' => false, 'msg' => 'Falha ao excluir o cliente!'));
-			}
-		}
-	}
+  public function buscar()
+  {
+    $this->load->model('clientes_model', 'cliente');
+    $post = $this->input->post();
+    if (!empty($post)) {
+      $codigo = $post['codigo'];
+      $cliente = $this->cliente->buscar($codigo);
+      if ($cliente) {
+        echo json_encode(array('retorno' => true, 'dados' => $cliente[0]));
+      } else {
+        echo json_encode(array('retorno' => false, 'msg' => 'Falha ao excluir o cliente!'));
+      }
+    }
+  }
 }

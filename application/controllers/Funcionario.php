@@ -16,6 +16,8 @@ class Funcionario extends CI_Controller
     // echo json_encode($this->session->userdata());exit;
     if (empty($this->session->userdata('usuario')) || $this->session->userdata('usuario') == false) {
       redirect('login');
+    }else if ($this->session->userdata('usuario')['nivel_usu'] == 2){
+      redirect('dashboard');
     }
   }
 
@@ -31,7 +33,7 @@ class Funcionario extends CI_Controller
 
   public function listar()
   {
-    $this->load->model('clientes_model', 'clientes');
+    $this->load->model('funcionarios_model', 'funcionarios');
     $post = $this->input->get();
 
     if (!empty($post)) {
@@ -39,9 +41,8 @@ class Funcionario extends CI_Controller
       $limit  = $post['length'];
       $q      = $post['search']['value'];
 
-      $dados = $this->clientes->listar($limit, $page);
-      $total = $this->clientes->contar();
-
+      $dados = $this->funcionarios->listar($limit, $page, $q);
+      $total = $this->funcionarios->contar($q);
       if (!empty($dados)) {
         $total_registros = $total;
         $retorno_dados = [];
@@ -52,18 +53,17 @@ class Funcionario extends CI_Controller
           $menu = '<div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">Ações </button>
                     <div class="dropdown-menu">
-                      <a class="dropdown-item item-editar" data-codigo="' . $dt->codigo_cli . '" data-nome="' . $dt->nome_cli . '"> <i class="fa-solid fa-pen"></i> Editar</a>
-                      <a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_cli . '" data-nome="' . $dt->nome_cli . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>
+                      <a class="dropdown-item item-editar" data-codigo="' . $dt->codigo_usu . '" data-nome="' . $dt->nome_usu . '"> <i class="fa-solid fa-pen"></i> Editar</a>
+                      <a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_usu . '" data-nome="' . $dt->nome_usu . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>
                     </div>
                   </div>';
           $tipodoc = '';
           $array = array(
             $contador,
-            limitaTexto($dt->nome_cli, 40),
-            mask($dt->documento_cli, 'documento'),
-            mask($dt->telefone_cli, 'telefone'),
-            !empty($dt->endereco_cli) ? $dt->endereco_cli : '<span class="badge badge-pill badge-danger">Sem Informação</span>',
-            !empty($dt->nome_cid) ? $dt->nome_cid . ' / ' . $dt->uf_est  : '<span class="badge badge-pill badge-danger">Sem Informação</span>',
+            $dt->nome_usu,
+            $dt->documento_usu,
+            $dt->email_usu,
+            !empty($dt->telefone_usu) ? mask($dt->telefone_usu, 'telefone') : '<span class="badge badge-pill badge-danger">Sem Informação</span>',
             $menu
           );
           array_push($retorno_dados, $array);
@@ -90,51 +90,39 @@ class Funcionario extends CI_Controller
 
   public function salvar()
   {
-    $this->load->model('clientes_model', 'cliente');
-    $this->load->model('cidade_model', 'cidade');
+    $this->load->model('funcionarios_model', 'funcionarios');
     $post = $this->input->post();
     $date = new DateTime();
     if (!empty($post)) {
-      if (!empty($post['nome_cli']) && !empty($post['documento_cli']) && !empty($post['telefone_cli'])) {
+      if (!empty($post['nome_func']) && !empty($post['documento_func']) && !empty($post['senha_func'])) {
+        $senha = hash_hmac('sha256', $post['senha_func'], KEY);
         $array = [
-          'nome_cli' => formata_string($post['nome_cli'], 'string'),
-          'documento_cli' => formata_string($post['documento_cli'], 'numeric'),
-          'telefone_cli' => formata_string($post['telefone_cli'], 'numeric'),
-          'codigo_usu' => $this->session->userdata('usuario')['codigo_usu'],
-          'datacadastro_cli' => $date->format('Y-m-d H:i:s')
+          'nome_usu'                => formata_string($post['nome_func'], 'string'),
+          'email_usu'               => formata_string($post['email_func'], 'email'),
+          'documento_usu'           => $post['documento_func'],
+          'telefone_usu'            => formata_string($post['telefone_func'], 'numeric'),
+          'nivel_usu'               => 2,
+          'ativo_usu'               => 1,
+          'senha_usu'               => $senha,
+          'senhadescriptograda_usu' => $post['senha_func']
         ];
-
-        if (!empty($post['cidade_cli'])) {
-          $buscaCidade = $this->cidade->busca_cidade_nome($post['cidade_cli'], $post['estado_cli']);
-          if ($buscaCidade) {
-            $array['cep_cli'] = formata_string($post['cep_cli'], 'numeric');
-            $array['endereco_cli'] = formata_string($post['endereco_cli'], 'string');
-            $array['bairro_cli'] = formata_string($post['bairro_cli'], 'string');
-            $array['numero_cli'] = formata_string($post['numero_cli'], 'numeric');
-            $array['complemento_cli'] = $post['complemento_cli'];
-            $array['codigo_cid'] = $buscaCidade[0]->codigo_cid;
-          } else {
-            echo json_encode(array('retorno' => false, 'msg' => 'Não foi possível encontrar a cidade em nosso banco de dados</br>Contate o administrador'));
-          }
-        }
-
-        if ($post['codigo_cli'] == 0){
-          $inserir = $this->cliente->inserir($array);
+        if ($post['codigo_usu'] == 0){
+          $inserir = $this->funcionarios->inserir($array);
           if ($inserir) {
-            echo json_encode(array('retorno' => true, 'msg' => 'Cliente cadastrado com sucesso!'));
+            echo json_encode(array('retorno' => true, 'msg' => 'Funcionário cadastrado com sucesso!'));
           } else {
             echo json_encode(array('retorno' => false, 'msg' => 'Falha ao cadastrar'));
           }
         }else{
-          $atualizar = $this->cliente->atualizar($post['codigo_cli'], $array);
+          $atualizar = $this->funcionarios->atualizar($post['codigo_cli'], $array);
           if ($atualizar) {
-            echo json_encode(array('retorno' => true, 'msg' => 'Cliente atualizado com sucesso!'));
+            echo json_encode(array('retorno' => true, 'msg' => 'Funcionário atualizado com sucesso!'));
           } else {
             echo json_encode(array('retorno' => false, 'msg' => 'Falha ao atualizar'));
           }
         }
       } else {
-        echo json_encode(array('retorno' => false, 'msg' => 'Dados obrigatórios do cliente incompletos'));
+        echo json_encode(array('retorno' => false, 'msg' => 'Dados obrigatórios do funcionário incompletos'));
       }
     } else {
       echo json_encode(array('retorno' => false, 'msg' => 'Cadastro vazio!'));
@@ -142,30 +130,34 @@ class Funcionario extends CI_Controller
   }
 
   public function inativar(){
-		$this->load->model('clientes_model', 'cliente');
+		$this->load->model('funcionarios_model', 'funcionarios');
 		$post = $this->input->post();
 		if(!empty($post)){
 			$codigo = $post['codigo'];
-			$inativar = $this->cliente->inativar($codigo);
+			$inativar = $this->funcionarios->inativar($codigo);
 			if ($inativar){
-				echo json_encode(array('retorno' => true, 'msg' => 'Cliente excluído com sucesso!'));
+				echo json_encode(array('retorno' => true, 'msg' => 'Funcionário excluído com sucesso!'));
 			}else{
-				echo json_encode(array('retorno' => false, 'msg' => 'Falha ao excluir o cliente!'));
+				echo json_encode(array('retorno' => false, 'msg' => 'Falha ao excluir o funcionário!'));
 			}
 		}
 	}
 
 	public function buscar(){
-		$this->load->model('clientes_model', 'cliente');
+		$this->load->model('funcionarios_model', 'funcionarios');
 		$post = $this->input->post();
 		if(!empty($post)){
-			$codigo = $post['codigo'];
-			$cliente = $this->cliente->buscar($codigo);
-			if ($cliente){
-				echo json_encode(array('retorno' => true, 'dados' => $cliente[0]));
-			}else{
-				echo json_encode(array('retorno' => false, 'msg' => 'Falha ao excluir o cliente!'));
-			}
+      if (!empty($post['codigo'])){
+        $codigo = $post['codigo'];
+        $funcionario = $this->funcionarios->buscar($codigo);
+        if ($funcionario){
+          echo json_encode(array('retorno' => true, 'dados' => $funcionario[0]));
+        }else{
+          echo json_encode(array('retorno' => false, 'msg' => 'Falha ao buscar o funcionário!'));
+        }
+      }else{
+        echo json_encode(array('retorno' => false, 'msg' => 'Falha ao buscar o funcionário!'));
+      }
 		}
 	}
 }
