@@ -30,10 +30,10 @@ $(document).ready(function () {
     }, {
       "width": "20%",
       "name": "E-Mail"
-    },{
+    }, {
       "width": "20%",
       "name": "Telefone"
-    },{
+    }, {
       "width": "10%",
       "name": "Ações"
     },
@@ -118,6 +118,33 @@ $(document).on('click', '#btn-modal-cadastro', function () {
   let senha_aleatoria = genPassword(8);
   $('#senha_func').val('').val(senha_aleatoria);
   $('#modal-cadastra-funcionario').modal('show');
+});
+
+$(document).on('click', '.item-editar', function () {
+  var codigo = $(this).data('codigo');
+  limpa_campos('formModalCadastrarFuncionario');
+  $.ajax({
+    url: base_url + 'funcionario/buscar',
+    type: 'POST',
+    data: { codigo: codigo },
+    dataType: 'json',
+    success: function (data) {
+      if (data.retorno) {
+        $('#modal-cadastra-funcionario').modal('show');
+        $('#codigo_usu').val(data.dados.codigo_usu)
+        $('#nome_func').val(data.dados.nome_usu)
+        $('#documento_func').val(data.dados.documento_usu).trigger('input')
+        $('#telefone_func').val(data.dados.telefone_usu).trigger('input')
+        $('#email_func').val(data.dados.email_usu)
+        $('#senha_func').val(data.dados.senhadescriptograda_usu)
+      } else {
+        erro(data.msg);
+      }
+    },
+    error: function () {
+      erro('Erro ao buscar o cliente');
+    }
+  });
 });
 
 $(document).on('click', '.item-excluir', function () {

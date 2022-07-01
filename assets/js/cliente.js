@@ -181,7 +181,7 @@ $(document).on('click', '.item-excluir', function () {
               },
               dataType: 'json',
               success: function (data) {
-                  if (data.return) {
+                  if (data.retorno) {
                       Swal.fire('Excluído!', data.msg, 'success')
                   } else {
                       erro(data.msg);

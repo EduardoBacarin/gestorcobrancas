@@ -17,7 +17,7 @@
                 <div class="form-group">
                   <?php $campo = 'nome_func'; ?>
                   <label for="<?= $campo ?>">Nome: </label>
-                  <input type="text" class="form-control" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="Nome">
+                  <input type="text" class="form-control" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="Nome" maxlength="100">
                 </div>
               </div>
               <div class="col-md-6">
@@ -40,7 +40,7 @@
                 <div class="form-group">
                   <?php $campo = 'email_func'; ?>
                   <label for="<?= $campo ?>">E-Mail: </label>
-                  <input type="text" class="form-control" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="E-Mail">
+                  <input type="text" class="form-control" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="E-Mail" maxlength="40">
                 </div>
               </div>
             </div>
@@ -49,7 +49,7 @@
                 <div class="form-group">
                   <?php $campo = 'senha_func'; ?>
                   <label for="<?= $campo ?>">Senha de Acesso: </label>
-                  <input type="text" class="form-control" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="Senha de Acesso">
+                  <input type="text" class="form-control" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="Senha de Acesso" maxlength="12">
                 </div>
               </div>
             </div>

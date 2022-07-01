@@ -64,12 +64,14 @@ class Funcionarios_model extends CI_Model
 		$this->db->where("nivel_usu", 2);
 		if (!empty($busca)) {
 			$this->db->group_start();
-				$this->db->like("usuario.nome_usu", formata_string($busca, 'string'));
-				// $this->db->or_like("cliente.telefone_cli", formata_string($busca, 'numeric'));
-				// $this->db->or_like("cliente.documento_cli", formata_string($busca, 'numeric'));
+				$this->db->like("usuario.nome_usu", $busca);
+				$this->db->or_like("usuario.telefone_usu", $busca);
+				$this->db->or_like("usuario.documento_usu", $busca);
+				$this->db->or_like("usuario.email_usu", $busca);
 			$this->db->group_end();
 		}
-        $this->db->limit($limit, $offset);
+		$this->db->order_by('usuario.codigo_usu', 'ASC');
+		$this->db->limit($limit, $offset);
 		$query = $this->db->get();
 
 		// print_r($this->db->last_query());exit;
@@ -89,9 +91,10 @@ class Funcionarios_model extends CI_Model
 		$this->db->where("nivel_usu", 2);
 		if (!empty($busca)) {
 			$this->db->group_start();
-				$this->db->like("usuario.nome_usu", formata_string($busca, 'string'));
-				// $this->db->or_like("cliente.telefone_cli", formata_string($busca, 'numeric'));
-				// $this->db->or_like("cliente.documento_cli", formata_string($busca, 'numeric'));
+				$this->db->like("usuario.nome_usu", $busca);
+				$this->db->or_like("usuario.telefone_usu", $busca);
+				$this->db->or_like("usuario.documento_usu", $busca);
+				$this->db->or_like("usuario.email_usu", $busca);
 			$this->db->group_end();
 		}
 		$total = $this->db->count_all_results();

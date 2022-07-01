@@ -79,7 +79,7 @@ class Cobrancas_model extends CI_Model
 		}
 	}
 
-	public function listar($limit, $offset, $mes, $ano)
+	public function listar($limit, $offset, $mes, $ano, $busca = '')
 	{
 		$this->db->select("*");
 		$this->db->from("cobrancas");
@@ -89,6 +89,13 @@ class Cobrancas_model extends CI_Model
 		$this->db->where("cobrancas.ativo_cob", true);
 		$this->db->where("MONTH(cobrancas.datacadastro_cob)", $mes);
 		$this->db->where("YEAR(cobrancas.datacadastro_cob)", $ano);
+		if (!empty($busca)) {
+			$this->db->like("cliente.nome_cli", $busca);
+			$this->db->or_like("cliente.telefone_cli", $busca);
+			$this->db->or_like("cliente.documento_cli", $busca);
+			$this->db->or_like("cobrancas.total_cob", $busca);
+		}
+		$this->db->order_by('cobrancas.datacadastro_cob', 'ASC');
         $this->db->limit($limit, $offset);
 		$query = $this->db->get();
 
@@ -134,11 +141,18 @@ class Cobrancas_model extends CI_Model
 		}
 	}
 
-	public function contar()
+	public function contar($busca = '')
 	{
 		$this->db->select("COUNT(codigo_cob)");
 		$this->db->from("cobrancas");
+		$this->db->join("cliente", "cliente.codigo_cli = cobrancas.codigo_cli", 'inner');
 		$this->db->where("cobrancas.ativo_cob", true);
+		if (!empty($busca)) {
+			$this->db->like("cliente.nome_cli", $busca);
+			$this->db->or_like("cliente.telefone_cli", $busca);
+			$this->db->or_like("cliente.documento_cli", $busca);
+			$this->db->or_like("cobrancas.total_cob", $busca);
+		}
 		$total = $this->db->count_all_results();
 
 		if ($this->db->count_all_results() >= 1) {

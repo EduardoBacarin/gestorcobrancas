@@ -16,7 +16,7 @@ class Funcionario extends CI_Controller
     // echo json_encode($this->session->userdata());exit;
     if (empty($this->session->userdata('usuario')) || $this->session->userdata('usuario') == false) {
       redirect('login');
-    }else if ($this->session->userdata('usuario')['nivel_usu'] == 2){
+    } else if ($this->session->userdata('usuario')['nivel_usu'] == 2) {
       redirect('dashboard');
     }
   }
@@ -106,16 +106,18 @@ class Funcionario extends CI_Controller
           'senha_usu'               => $senha,
           'senhadescriptograda_usu' => $post['senha_func']
         ];
-        if ($post['codigo_usu'] == 0){
+        if ($post['codigo_usu'] == 0) {
           $inserir = $this->funcionarios->inserir($array);
           if ($inserir) {
+            $this->salvar_log('Inserindo o funcionário de ID ' . $inserir, 'create');
             echo json_encode(array('retorno' => true, 'msg' => 'Funcionário cadastrado com sucesso!'));
           } else {
             echo json_encode(array('retorno' => false, 'msg' => 'Falha ao cadastrar'));
           }
-        }else{
-          $atualizar = $this->funcionarios->atualizar($post['codigo_cli'], $array);
+        } else {
+          $atualizar = $this->funcionarios->atualizar($post['codigo_usu'], $array);
           if ($atualizar) {
+            $this->salvar_log('Atualizando o funcionário de ID ' . $post['codigo_usu'], 'update');
             echo json_encode(array('retorno' => true, 'msg' => 'Funcionário atualizado com sucesso!'));
           } else {
             echo json_encode(array('retorno' => false, 'msg' => 'Falha ao atualizar'));
@@ -129,35 +131,54 @@ class Funcionario extends CI_Controller
     }
   }
 
-  public function inativar(){
-		$this->load->model('funcionarios_model', 'funcionarios');
-		$post = $this->input->post();
-		if(!empty($post)){
-			$codigo = $post['codigo'];
-			$inativar = $this->funcionarios->inativar($codigo);
-			if ($inativar){
-				echo json_encode(array('retorno' => true, 'msg' => 'Funcionário excluído com sucesso!'));
-			}else{
-				echo json_encode(array('retorno' => false, 'msg' => 'Falha ao excluir o funcionário!'));
-			}
-		}
-	}
+  public function inativar()
+  {
+    $this->load->model('funcionarios_model', 'funcionarios');
+    $post = $this->input->post();
+    if (!empty($post)) {
+      $codigo = $post['codigo'];
+      $inativar = $this->funcionarios->inativar($codigo);
+      if ($inativar) {
+        $this->salvar_log('Inativando o funcionário de ID ' . $post['codigo'], 'delete');
+        echo json_encode(array('retorno' => true, 'msg' => 'Funcionário excluído com sucesso!'));
+      } else {
+        echo json_encode(array('retorno' => false, 'msg' => 'Falha ao excluir o funcionário!'));
+      }
+    }
+  }
 
-	public function buscar(){
-		$this->load->model('funcionarios_model', 'funcionarios');
-		$post = $this->input->post();
-		if(!empty($post)){
-      if (!empty($post['codigo'])){
+  public function buscar()
+  {
+    $this->load->model('funcionarios_model', 'funcionarios');
+    $post = $this->input->post();
+    if (!empty($post)) {
+      if (!empty($post['codigo'])) {
         $codigo = $post['codigo'];
         $funcionario = $this->funcionarios->buscar($codigo);
-        if ($funcionario){
+        if ($funcionario) {
           echo json_encode(array('retorno' => true, 'dados' => $funcionario[0]));
-        }else{
+        } else {
           echo json_encode(array('retorno' => false, 'msg' => 'Falha ao buscar o funcionário!'));
         }
-      }else{
+      } else {
         echo json_encode(array('retorno' => false, 'msg' => 'Falha ao buscar o funcionário!'));
       }
-		}
-	}
+    }
+  }
+
+  private function salvar_log($acao, $crud, $cobranca = '', $parcela = '')
+  {
+    $this->load->model('log_model', 'logfunc');
+    $date = new DateTime();
+    $date->setTimezone(new DateTimeZone('America/Sao_Paulo'));
+    $array = [
+      'codigo_usu'       => $this->session->userdata('usuario')['codigo_usu'],
+      'codigo_cob'       => $cobranca,
+      'codigo_par'       => $parcela,
+      'acao_log'         => $acao,
+      'crud_log'         => $crud,
+      'datacadastro_log' => $date->format('Y-m-d H:i:s'),
+    ];
+    $log = $this->logfunc->inserir($array);
+  }
 }

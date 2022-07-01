@@ -8,7 +8,7 @@ $(document).ready(function () {
     "serverSide": true,
     "aaSorting": [],
     "order": [],
-    "filter": false,
+    "filter": true,
     "lengthMenu": [
       [10, 50, 75, 100],
       ['10', '50', '75', '100']

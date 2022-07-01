@@ -133,7 +133,7 @@ class Dashboard_model extends CI_Model
 	}
 
 
-	public function listar_vencidos($limit, $offset)
+	public function listar_vencidos($limit, $offset, $busca = '')
 	{
 		$this->db->select("*");
 		$this->db->from("parcelas_cobranca");
@@ -141,9 +141,17 @@ class Dashboard_model extends CI_Model
 		$this->db->join("cliente", "cliente.codigo_cli = cobrancas.codigo_cli", 'inner');
 		$this->db->join("cidades", "cidades.codigo_cid = cliente.codigo_cid", 'inner');
 		$this->db->join("estados", "estados.codigo_est = cidades.codigo_est", 'inner');
-		$this->db->where("parcelas_cobranca.datavencimento_par <", date('Y-m-d'));
+		$this->db->where("parcelas_cobranca.datavencimento_par <=", date('Y-m-d'));
 		$this->db->where("parcelas_cobranca.status_par", 1);
 		$this->db->where("cobrancas.ativo_cob", true);
+		if (!empty($busca)) {
+			$this->db->group_start();
+				$this->db->like("cliente.nome_cli", $busca);
+				$this->db->or_like("cliente.documento_cli", $busca);
+				$this->db->or_like("cobrancas.total_cob", $busca);
+			$this->db->group_end();
+		}
+		$this->db->order_by('parcelas_cobranca.datavencimento_par', 'ASC');
         $this->db->limit($limit, $offset);
 		$query = $this->db->get();
 
@@ -154,13 +162,22 @@ class Dashboard_model extends CI_Model
 		}
 	}
 
-	public function contar_vencidos()
+	public function contar_vencidos($busca = '')
 	{
 		$this->db->select("COUNT(codigo_cob)");
 		$this->db->from("parcelas_cobranca");
-		$this->db->where("parcelas_cobranca.datavencimento_par <", date('Y-m-d'));
+		$this->db->join("cobrancas", "cobrancas.codigo_cob = parcelas_cobranca.codigo_cob", 'inner');
+		$this->db->join("cliente", "cliente.codigo_cli = cobrancas.codigo_cli", 'inner');
+		$this->db->where("parcelas_cobranca.datavencimento_par <=", date('Y-m-d'));
 		$this->db->where("parcelas_cobranca.status_par", 1);
 		$this->db->where("parcelas_cobranca.ativo_par", true);
+		if (!empty($busca)) {
+			$this->db->group_start();
+				$this->db->like("cliente.nome_cli", $busca);
+				$this->db->or_like("cliente.documento_cli", $busca);
+				$this->db->or_like("cobrancas.total_cob", $busca);
+			$this->db->group_end();
+		}
 		$total = $this->db->count_all_results();
 
 		if ($this->db->count_all_results() >= 1) {

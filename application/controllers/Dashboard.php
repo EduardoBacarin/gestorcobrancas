@@ -45,8 +45,8 @@ class Dashboard extends CI_Controller{
       $page       = $post['start'];
       $limit      = $post['length'];
       $q          = $post['search']['value'];
-      $dados = $this->dashboard->listar_vencidos($limit, $page);
-      $total = $this->dashboard->contar_vencidos();
+      $dados = $this->dashboard->listar_vencidos($limit, $page, $q);
+      $total = $this->dashboard->contar_vencidos($q);
       if (!empty($dados)) {
         $total_registros = $total;
         $retorno_dados = [];

@@ -45,6 +45,7 @@ class Login extends CI_Controller
       ];
 
       $this->session->set_userdata('usuario', $sessao);
+      $this->salvar_log($busca[0]->codigo_usu, 'Login do funcionário de ID' . $busca[0]->codigo_usu, 'login');
       echo json_encode(array('retorno' => true, 'redirect' => '/dashboard'));
     } else {
       echo json_encode(array('retorno' => false, 'msg' => 'Usuário ou senha inválidos!'));
@@ -61,5 +62,23 @@ class Login extends CI_Controller
     $this->session->sess_destroy();
     $this->session->set_userdata('usuario', '');
     redirect('login');
+  }
+
+
+
+  private function salvar_log($usuario, $acao, $crud, $cobranca = '', $parcela = '')
+  {
+    $this->load->model('log_model', 'logfunc');
+    $date = new DateTime();
+    $date->setTimezone(new DateTimeZone('America/Sao_Paulo'));
+    $array = [
+      'codigo_usu'       => $usuario,
+      'codigo_cob'       => $cobranca,
+      'codigo_par'       => $parcela,
+      'acao_log'         => $acao,
+      'crud_log'         => $crud,
+      'datacadastro_log' => $date->format('Y-m-d H:i:s'),
+    ];
+    $log = $this->logfunc->inserir($array);
   }
 }

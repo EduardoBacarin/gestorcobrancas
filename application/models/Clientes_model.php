@@ -64,12 +64,11 @@ class Clientes_model extends CI_Model
 		$this->db->join("estados", "estados.codigo_est = cidades.codigo_est", 'left');
 		$this->db->where("ativo_cli", true);
 		if (!empty($busca)) {
-			$this->db->group_start();
-				$this->db->like("cliente.nome_cli", formata_string($busca, 'string'));
-				// $this->db->or_like("cliente.telefone_cli", formata_string($busca, 'numeric'));
-				// $this->db->or_like("cliente.documento_cli", formata_string($busca, 'numeric'));
-			$this->db->group_end();
+			$this->db->like("cliente.nome_cli", $busca);
+			$this->db->or_like("cliente.telefone_cli", $busca);
+			$this->db->or_like("cliente.documento_cli", $busca);
 		}
+		$this->db->order_by('cliente.codigo_cli', 'ASC');
 		$this->db->limit($limit, $offset);
 		$query = $this->db->get();
 
@@ -88,11 +87,9 @@ class Clientes_model extends CI_Model
 		$this->db->from("cliente");
 		$this->db->where("cliente.ativo_cli", true);
 		if (!empty($busca)) {
-			$this->db->group_start();
-				$this->db->like("cliente.nome_cli", formata_string($busca, 'string'));
-				// $this->db->or_like("cliente.telefone_cli", formata_string($busca, 'numeric'));
-				// $this->db->or_like("cliente.documento_cli", formata_string($busca, 'numeric'));
-			$this->db->group_end();
+			$this->db->like("cliente.nome_cli", $busca);
+			$this->db->or_like("cliente.telefone_cli", $busca);
+			$this->db->or_like("cliente.documento_cli", $busca);
 		}
 		$this->db->order_by("cliente.nome", "ASC");
 		$total = $this->db->count_all_results();

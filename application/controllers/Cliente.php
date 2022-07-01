@@ -121,6 +121,7 @@ class Cliente extends CI_Controller
         if ($post['codigo_cli'] == 0) {
           $inserir = $this->cliente->inserir($array);
           if ($inserir) {
+            $this->salvar_log('Inserção do cliente de ID' . $inserir, 'create');
             echo json_encode(array('retorno' => true, 'msg' => 'Cliente cadastrado com sucesso!'));
           } else {
             echo json_encode(array('retorno' => false, 'msg' => 'Falha ao cadastrar'));
@@ -128,6 +129,7 @@ class Cliente extends CI_Controller
         } else {
           $atualizar = $this->cliente->atualizar($post['codigo_cli'], $array);
           if ($atualizar) {
+            $this->salvar_log('Atualização do cliente de ID' . $post['codigo_cli'], 'update');
             echo json_encode(array('retorno' => true, 'msg' => 'Cliente atualizado com sucesso!'));
           } else {
             echo json_encode(array('retorno' => false, 'msg' => 'Falha ao atualizar'));
@@ -149,6 +151,7 @@ class Cliente extends CI_Controller
       $codigo = $post['codigo'];
       $inativar = $this->cliente->inativar($codigo);
       if ($inativar) {
+        $this->salvar_log('Inativação do cliente de ID' . $codigo, 'delete');
         echo json_encode(array('retorno' => true, 'msg' => 'Cliente excluído com sucesso!'));
       } else {
         echo json_encode(array('retorno' => false, 'msg' => 'Falha ao excluir o cliente!'));
@@ -169,5 +172,21 @@ class Cliente extends CI_Controller
         echo json_encode(array('retorno' => false, 'msg' => 'Falha ao excluir o cliente!'));
       }
     }
+  }
+
+  private function salvar_log($acao, $crud, $cobranca = '', $parcela = '')
+  {
+    $this->load->model('log_model', 'logfunc');
+    $date = new DateTime();
+    $date->setTimezone(new DateTimeZone('America/Sao_Paulo'));
+    $array = [
+      'codigo_usu'       => $this->session->userdata('usuario')['codigo_usu'],
+      'codigo_cob'       => $cobranca,
+      'codigo_par'       => $parcela,
+      'acao_log'         => $acao,
+      'crud_log'         => $crud,
+      'datacadastro_log' => $date->format('Y-m-d H:i:s'),
+    ];
+    $log = $this->logfunc->inserir($array);
   }
 }

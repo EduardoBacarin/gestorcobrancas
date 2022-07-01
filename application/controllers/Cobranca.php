@@ -48,8 +48,8 @@ class Cobranca extends CI_Controller
       $q      = $post['search']['value'];
       $mes    = $post['mes_selecionado'];
       $ano    = $post['ano_selecionado'];
-      $dados = $this->cobrancas->listar($limit, $page, $mes, $ano);
-      $total = $this->cobrancas->contar($mes);
+      $dados = $this->cobrancas->listar($limit, $page, $mes, $ano, $q);
+      $total = $this->cobrancas->contar($q);
 
       if (!empty($dados)) {
         $total_registros = $total;
@@ -149,7 +149,7 @@ class Cobranca extends CI_Controller
                 $status = '<i class="fa-regular fa-clock" style="color: orange"></i> <strong>Aguardando</strong>';
               } else if ($data_vencimento->format('Y-m-d') == $hoje->format('Y-m-d')) {
                 $status = '<i class="fa-regular fa-clock" style="color: orange"></i> <strong>Vence Hoje</strong>';
-              }else {
+              } else {
                 $status = '<i class="fa-solid fa-circle-exclamation" style="color: red"></i> <strong>Atrasado</strong>';
                 $status_cod = 1;
                 $diffdias = $hoje->diff($data_vencimento)->days;
@@ -325,13 +325,15 @@ class Cobranca extends CI_Controller
             }
 
             if ($inserir) {
+              $this->salvar_log('Criada a cobrança de ID ' . $inserir, 'create', $inserir);
               echo json_encode(array('return' => true, 'msg' => 'Cobrança cadastrada com sucesso!'));
             } else {
               echo json_encode(array('return' => false, 'msg' => 'Falha ao cadastrar'));
             }
           } else {
-            $atualizar = $this->cobrancas->atualizar($post['codigo_cli'], $array);
+            $atualizar = $this->cobrancas->atualizar($post['codigo_cob'], $array);
             if ($atualizar) {
+              $this->salvar_log('Criada a cobrança de ID ' . $post['codigo_cob'], 'update', $post['codigo_cob']);
               echo json_encode(array('return' => true, 'msg' => 'Cobrança atualizada com sucesso!'));
             } else {
               echo json_encode(array('return' => false, 'msg' => 'Falha ao atualizar'));
@@ -356,6 +358,7 @@ class Cobranca extends CI_Controller
       $codigo = $post['codigo'];
       $inativar = $this->cobrancas->inativar($codigo);
       if ($inativar) {
+        $this->salvar_log('Inativando a cobrança de ID ' . $post['codigo'], 'delete', $codigo);
         echo json_encode(array('return' => true, 'msg' => 'Cobrança excluída com sucesso!'));
       } else {
         echo json_encode(array('return' => false, 'msg' => 'Falha ao excluir o cliente!'));
@@ -400,6 +403,7 @@ class Cobranca extends CI_Controller
       ];
       $pago = $this->cobrancas->atualizar_parcela($codigo, $pagamento);
       if ($pago) {
+        $this->salvar_log('Marcando pago a parcela de ID ' . $post['codigo_par'], 'update', '', $codigo);
         echo json_encode(array('return' => true, 'msg' => 'Cobrança paga com sucesso'));
       } else {
         echo json_encode(array('return' => false, 'msg' => 'Falha ao marcar pago!'));
@@ -413,6 +417,7 @@ class Cobranca extends CI_Controller
       ];
       $pago = $this->cobrancas->atualizar_parcela($codigo, $pagamento);
       if ($pago) {
+        $this->salvar_log('Marcando pago a parcela de ID ' . $post['codigo_par'], 'update', '', $codigo);
         echo json_encode(array('return' => true, 'msg' => 'Cobrança paga com sucesso'));
       } else {
         echo json_encode(array('return' => false, 'msg' => 'Falha ao marcar pago!'));
@@ -420,41 +425,42 @@ class Cobranca extends CI_Controller
     }
   }
 
-  public function calcula_juros(){
+  public function calcula_juros()
+  {
     $post = $this->input->post();
     $this->load->model('cobrancas_model', 'cobrancas');
 
-    if (!empty($post)){
+    if (!empty($post)) {
       $busca_parcela = $this->cobrancas->buscar_parcela($post['codigo']);
 
-      if (!empty($busca_parcela)){
-        if ($busca_parcela[0]->tipojuros_cob == 1){
+      if (!empty($busca_parcela)) {
+        if ($busca_parcela[0]->tipojuros_cob == 1) {
           // JUROS SIMPLES
           $calculo_juros = $this->jurosSimples($busca_parcela[0]->datavencimento_par, $busca_parcela[0]->valor_par, $busca_parcela[0]->taxavencimento_cob);
-          if (!empty($calculo_juros)){
+          if (!empty($calculo_juros)) {
             $calculo_juros['valor_parcela'] = floatval($busca_parcela[0]->valor_par);
             $calculo_juros['tipo_juros'] = 'Juros Simples';
             echo json_encode(array('return' => true, 'juros' => $calculo_juros));
-          }else{
+          } else {
             echo json_encode(array('return' => false, 'msg' => 'Falha nos cálculos dos juros!'));
           }
-        }else if($busca_parcela[0]->tipojuros_cob == 2){
+        } else if ($busca_parcela[0]->tipojuros_cob == 2) {
           // JUROS COMPOSTO
           $calculo_juros = $this->jurosComposto($busca_parcela[0]->datavencimento_par, $busca_parcela[0]->valor_par, $busca_parcela[0]->taxavencimento_cob);
-          if (!empty($calculo_juros)){
+          if (!empty($calculo_juros)) {
             $calculo_juros['valor_parcela'] = floatval($busca_parcela[0]->valor_par);
             $calculo_juros['tipo_juros'] = 'Juros Composto';
             echo json_encode(array('return' => true, 'juros' => $calculo_juros));
-          }else{
+          } else {
             echo json_encode(array('return' => false, 'msg' => 'Falha nos cálculos dos juros!'));
           }
-        }else{
+        } else {
           echo json_encode(array('return' => false, 'msg' => 'Tipo de juros inválido!'));
         }
-      }else{
+      } else {
         echo json_encode(array('return' => false, 'msg' => 'Falha ao buscar dados da parcela!'));
       }
-    }else{
+    } else {
       echo json_encode(array('return' => false, 'msg' => 'Falha ao calcular os juros!'));
     }
   }
@@ -498,9 +504,25 @@ class Cobranca extends CI_Controller
 
     return array(
       "valor_final"       => $valor_corrido,
-      "taxa_cobrada"      => floatval($rate)/100,
+      "taxa_cobrada"      => floatval($rate) / 100,
       "valor_taxa"        => $diferenca,
       "dias_atrasados"    => $diffdias,
     );
+  }
+
+  private function salvar_log($acao, $crud, $cobranca = '', $parcela = '')
+  {
+    $this->load->model('log_model', 'logfunc');
+    $date = new DateTime();
+    $date->setTimezone(new DateTimeZone('America/Sao_Paulo'));
+    $array = [
+      'codigo_usu'       => $this->session->userdata('usuario')['codigo_usu'],
+      'codigo_cob'       => $cobranca,
+      'codigo_par'       => $parcela,
+      'acao_log'         => $acao,
+      'crud_log'         => $crud,
+      'datacadastro_log' => $date->format('Y-m-d H:i:s'),
+    ];
+    $log = $this->logfunc->inserir($array);
   }
 }
