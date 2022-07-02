@@ -9,11 +9,13 @@ $(document).ready(function () {
     "aaSorting": [],
     "order": [],
     "filter": true,
+    "responsive": true,
     "lengthMenu": [
       [10, 50, 75, 100],
       ['10', '50', '75', '100']
     ],
     "processing": true,
+    "autoWidth": false,
     "language": {
       "url": '//cdn.datatables.net/plug-ins/1.12.1/i18n/pt-BR.json'
     },

@@ -13,7 +13,7 @@ class Login extends CI_Controller
   public function __construct()
   {
     parent::__construct();
-    // echo json_encode(hash_hmac('sha256', '102030', KEY));exit;
+    // echo json_encode(hash_hmac('sha256', 'victor102030', KEY));exit;
   }
 
   public function index()

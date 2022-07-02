@@ -25,14 +25,14 @@ $(document).on('blur', '.cep', function () {
     $('.estado').val('...');
 
     $.getJSON("https://ms.mook.com.br/cep/" + cep, function (data) {
-        if (data.erro){
+        if (data.erro) {
             erro('CEP não encontrado')
             $('.logradouro').val('');
             $('.bairro').val('');
             $('.cidade').val('');
             $('.estado').val('');
             $('.cep').focus();
-        }else{
+        } else {
             $('.logradouro').val(data.logradouro);
             $('.bairro').val(data.bairro);
             $('.cidade').val(data.cidade);

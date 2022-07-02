@@ -1,6 +1,6 @@
 var base_url = $("#base_url").val();
 var avisos = "Obrigatório."
-var tabela_cobrancas, tabela_parcelas;
+var tabela_cobrancas;
 var mes_selecionado = $('#mes_selecionado').val();
 var ano_selecionado = $('#ano_selecionado').val();
 
@@ -11,6 +11,8 @@ $(document).ready(function () {
     "aaSorting": [],
     "order": [],
     "filter": true,
+    "autoWidth": false,
+    "responsive": true,
     "lengthMenu": [
       [10, 50, 75, 100],
       ['10', '50', '75', '100']
@@ -167,6 +169,7 @@ $(document).ready(function () {
       });
     });
 });
+
 $(document).on('change', 'input[type=radio][name=tipocobranca_cob]', function () {
   if (this.value == 1) {
     $('.divDiario').hide();
@@ -394,12 +397,15 @@ $(document).on('click', '.item-verparcelas', function () {
   if ($.fn.DataTable.isDataTable('#tabela-parcelas')) {
     tabela_parcelas.destroy();
   }
-  tabela_parcelas = $("#tabela-parcelas").DataTable({
+  var tabela_parcelas = $("#tabela-parcelas").DataTable({
     "ordering": false,
     "serverSide": true,
     "aaSorting": [],
     "order": [],
     "filter": false,
+    "autoWidth": false,
+    "responsive": true,
+    "scrollX": true,
     "lengthMenu": [
       [10, 50, 75, 100],
       ['10', '50', '75', '100']
@@ -452,10 +458,9 @@ $(document).on('click', '.item-verparcelas', function () {
     },
     ],
     "columnDefs": [{
-      "targets": [0, 1, 2, 3, 4, 5, 6, 7],
-      "className": 'dt-body-nowrap'
+      "targets": [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      "className": 'dt-body-nowrap dt-head-nowrap'
     }],
-
   });
 });
 

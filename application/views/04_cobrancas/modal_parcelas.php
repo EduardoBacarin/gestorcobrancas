@@ -9,21 +9,25 @@
         </button>
       </div>
       <div class="modal-body">
-        <table id="tabela-parcelas" class="table table-bordered table-hover dataTable dtr-inline" style="width: 100%">
-          <thead>
-            <th>#</th>
-            <th>Cliente</th>
-            <th>Valor da Cobrança</th>
-            <th>Valor da Parcela</th>
-            <th>Parcela</th>
-            <th>Data de Vencimento</th>
-            <th>Status</th>
-            <th>Lucro</th>
-            <th>Ações</th>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
+        <div class="row">
+          <div class="col-md-12">
+            <table id="tabela-parcelas" class="table table-bordered table-hover dataTable dtr-inline">
+              <thead>
+                <th>#</th>
+                <th>Cliente</th>
+                <th>Valor da Cobrança</th>
+                <th>Valor da Parcela</th>
+                <th>Parcela</th>
+                <th>Data de Vencimento</th>
+                <th>Status</th>
+                <th>Lucro</th>
+                <th>Ações</th>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>

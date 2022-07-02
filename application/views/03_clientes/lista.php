@@ -17,33 +17,39 @@
 
     <!-- Main content -->
     <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Todos os Clientes</h3>
 
-      <!-- Default box -->
-      <div class="card">
-        <div class="card-header">
-          <h3 class="card-title">Todos os Clientes</h3>
+                <div class="card-tools">
+                  <button type="button" class="btn btn-info" id="btn-modal-cadastro">
+                    <i class="fas fa-plus"></i> Cadastrar
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <table id="tabela-clientes" class="table table-bordered table-hover dataTable dtr-inline collapsed">
+                  <thead>
+                    <th>#</th>
+                    <th>Nome</th>
+                    <th>Documento</th>
+                    <th>Telefone</th>
+                    <th>Endereço</th>
+                    <th>Cidade / UF</th>
+                    <th>Ações</th>
+                  </thead>
+                  <tbody>
+                  </tbody>
+                </table>
+              </div>
+            </div>
 
-          <div class="card-tools">
-            <button type="button" class="btn btn-info" id="btn-modal-cadastro">
-              <i class="fas fa-plus"></i> Cadastrar
-            </button>
           </div>
         </div>
-        <div class="card-body">
-          <table id="tabela-clientes" class="table table-bordered table-hover dataTable dtr-inline">
-            <thead>
-              <th>#</th>
-              <th>Nome</th>
-              <th>Documento</th>
-              <th>Telefone</th>
-              <th>Endereço</th>
-              <th>Cidade / UF</th>
-              <th>Ações</th>
-            </thead>
-            <tbody>
-            </tbody>
-          </table>
-        </div>
+
         <!-- /.card-body -->
         <div class="card-footer">
         </div>

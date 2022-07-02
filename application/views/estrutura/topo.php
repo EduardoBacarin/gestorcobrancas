@@ -7,7 +7,7 @@
   <title>GCobrança</title>
   <link rel="icon" href="<?= base_url('assets') ?>/imagens/favicon.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- <link rel="stylesheet" href="<?= base_url('assets') ?>/plugins/fontawesome-free/css/all.min.css"> -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.3.0/css/responsive.dataTables.min.css">
   <script src="https://kit.fontawesome.com/f89139718b.js" crossorigin="anonymous"></script>
   <script type='text/javascript' src='http://cdnjs.cloudflare.com/ajax/libs/fabric.js/1.4.0/fabric.min.js'></script>
   <link rel="stylesheet" href="<?= base_url('assets') ?>/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
@@ -105,15 +105,15 @@
                 </p>
               </a>
             </li>
-            <?php if ($this->session->userdata('usuario')['nivel_usu'] == 1) { ?>          
-            <li class="nav-item">
-              <a href="<?= base_url('funcionario') ?>" class="nav-link">
-                <i class="fa-solid fa-user-tie ml-1"></i>
-                <p class="ml-2">
-                  Funcionários
-                </p>
-              </a>
-            </li>
+            <?php if ($this->session->userdata('usuario')['nivel_usu'] == 1) { ?>
+              <li class="nav-item">
+                <a href="<?= base_url('funcionario') ?>" class="nav-link">
+                  <i class="fa-solid fa-user-tie ml-1"></i>
+                  <p class="ml-2">
+                    Funcionários
+                  </p>
+                </a>
+              </li>
             <?php } ?>
           </ul>
         </nav>

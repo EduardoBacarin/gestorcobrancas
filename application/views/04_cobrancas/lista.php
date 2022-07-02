@@ -60,6 +60,7 @@
         <div class="card-body">
           <input type="hidden" id="mes_selecionado" value="<?= date('m') ?>">
           <input type="hidden" id="ano_selecionado" value="<?= date('Y') ?>">
+          <input type="hidden" id="codigo_cob" value="0">
           <table id="tabela-cobrancas" class="table table-bordered table-hover dataTable dtr-inline">
             <thead>
               <th>#</th>
