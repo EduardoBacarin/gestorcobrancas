@@ -124,4 +124,22 @@ class Funcionarios_model extends CI_Model
 			return false;
 		}
 	}
+
+	public function listar_todos()
+	{
+		$this->db->select("*");
+		$this->db->from("usuario");
+		$this->db->where("ativo_usu", true);
+		$this->db->where("nivel_usu", 2);
+		$this->db->order_by('usuario.codigo_usu', 'ASC');
+		$query = $this->db->get();
+
+		// print_r($this->db->last_query());exit;
+
+		if ($query->num_rows() >= 1) {
+			return $query->result();
+		} else {
+			return false;
+		}
+	}
 }
