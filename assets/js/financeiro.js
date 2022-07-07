@@ -1,6 +1,8 @@
 var base_url = $("#base_url").val();
 var avisos = "Obrigatório."
 var tabela_despesas, tabela_receitas;
+var mes_selecionado = $('#mes_selecionado').val();
+var ano_selecionado = $('#ano_selecionado').val();
 
 $(document).ready(function () {
   tabela_despesas = $("#tabela-despesas").DataTable({
@@ -19,7 +21,13 @@ $(document).ready(function () {
     "language": {
       "url": '//cdn.datatables.net/plug-ins/1.12.1/i18n/pt-BR.json'
     },
-    "ajax": base_url + "financeiro/listar_despesas",
+    "ajax": {
+      url: base_url + "financeiro/listar_despesas",
+      'data': function (data) {
+        data.mes_selecionado = mes_selecionado;
+        data.ano_selecionado = ano_selecionado;
+      }
+    },
     "columns": [{
       "width": "5%",
       "name": "Posição"
@@ -66,7 +74,13 @@ $(document).ready(function () {
     "language": {
       "url": '//cdn.datatables.net/plug-ins/1.12.1/i18n/pt-BR.json'
     },
-    "ajax": base_url + "financeiro/listar_receitas",
+    "ajax": {
+      url: base_url + "financeiro/listar_receitas",
+      'data': function (data) {
+        data.mes_selecionado = mes_selecionado;
+        data.ano_selecionado = ano_selecionado;
+      }
+    },
     "columns": [{
       "width": "5%",
       "name": "Posição"
@@ -156,6 +170,7 @@ $(document).ready(function () {
             $('#modal-cadastra-financeiro').modal('hide');
             tabela_despesas.draw();
             tabela_receitas.draw();
+            calcula_resumo(mes_selecionado, ano_selecionado);
           } else {
             erro(data.msg);
           }
@@ -163,7 +178,27 @@ $(document).ready(function () {
       });
     });
 
+  grafico_categoria();
+  grafico_funcionario();
+  calcula_resumo(mes_selecionado, ano_selecionado);
 });
+
+$(document).on('change', '#troca-mes', function () {
+  $('#mes_selecionado').val($(this).find(':selected').val());
+  mes_selecionado = $(this).find(':selected').val();
+  tabela_despesas.draw();
+  tabela_receitas.draw();
+  calcula_resumo(mes_selecionado, ano_selecionado);
+});
+
+$(document).on('change', '#troca-ano', function () {
+  $('#ano_selecionado').val($(this).find(':selected').val());
+  ano_selecionado = $(this).find(':selected').val();
+  tabela_despesas.draw();
+  tabela_receitas.draw();
+  calcula_resumo(mes_selecionado, ano_selecionado);
+});
+
 
 $(document).on('click', '#btn-modal-cadastro', function () {
   var now = new Date();
@@ -197,12 +232,12 @@ $(document).on('click', '.item-editar', function () {
 
         tabela_despesas.draw();
         tabela_receitas.draw();
-        if (data.dados.tipo_fin == 1){
+        if (data.dados.tipo_fin == 1) {
           $("#tipo_fin-1").prop("checked", true);
-        }else{
+        } else {
           $("#tipo_fin-2").prop("checked", true);
         }
-       
+
       } else {
         erro(data.msg);
       }
@@ -254,3 +289,126 @@ $(document).on('click', '.item-excluir', function () {
 function limpa_campos(form) {
   $('#' + form).trigger("reset");
 };
+
+function grafico_categoria() {
+
+  $.ajax({
+    url: base_url + 'financeiro/grafico_despesas_categoria',
+    type: 'POST',
+    dataType: 'json',
+    success: function (data) {
+      if (data.retorno) {
+        monta_grafico_categoria(data.soma, data.categoria);
+      } else {
+        erro('Não foi possível montar o gráfico');
+      }
+    },
+    error: function () {
+
+    }
+  });
+}
+
+function grafico_funcionario() {
+
+  $.ajax({
+    url: base_url + 'financeiro/grafico_despesas_funcionario',
+    type: 'POST',
+    dataType: 'json',
+    success: function (data) {
+      if (data.retorno) {
+        monta_grafico_funcionario(data.soma, data.funcionario);
+      } else {
+        erro('Não foi possível montar o gráfico');
+      }
+    },
+    error: function () {
+
+    }
+  });
+}
+
+function monta_grafico_categoria(valor, categoria) {
+  var options = {
+    chart: {
+      type: 'donut'
+    },
+    series: valor,
+    labels: categoria,
+    width: '100%',
+    tooltip: {
+      x: {
+        show: false
+      },
+      y: {
+        formatter: function (value) {
+          return value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        }
+      }
+    },
+    legend: {
+      position: 'bottom'
+    },
+  }
+
+  var grafcategoria = new ApexCharts(document.querySelector("#graficocategoria"), options);
+  grafcategoria.render();
+  $('.card-gastoscat').find('.overlay').hide();
+}
+
+
+function monta_grafico_funcionario(valor, funcionario) {
+  var options = {
+    chart: {
+      type: 'donut'
+    },
+    series: valor,
+    labels: funcionario,
+    width: '100%',
+    tooltip: {
+      x: {
+        show: false
+      },
+      y: {
+        formatter: function (value) {
+          return value.toLocaleString('pt-br', { style: 'currency', currency: 'BRL' });
+        }
+      }
+    },
+    legend: {
+      position: 'bottom'
+    },
+  }
+
+  var graffuncionario = new ApexCharts(document.querySelector("#graficofuncionario"), options);
+  graffuncionario.render();
+  $('.card-gastosfunc').find('.overlay').hide();
+}
+
+function calcula_resumo(mes, ano) {
+  $('.card-resumo').find('.overlay').show();
+  $.ajax({
+    url: base_url + 'financeiro/calcula_resumo',
+    type: 'POST',
+    data: { mes: mes, ano: ano },
+    dataType: 'json',
+    success: function (data) {
+      if (data.retorno) {
+        $('#total_receita').html(parseFloat(data.receita).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }));
+        $('#total_despesas').html(parseFloat(data.despesa).toLocaleString('pt-br', { style: 'currency', currency: 'BRL' }));
+      } else {
+        $('#total_receita').html('R$ 0,00');
+        $('#total_despesas').html('R$ 0,00');
+        $('.card-resumo').find('.overlay').hide();
+        // erro('Erro ao fazer a busca do resumo!');
+      }
+      $('.card-resumo').find('.overlay').hide();
+    },
+    error: function () {
+      $('#total_receita').html('R$ 0,00');
+      $('#total_despesas').html('R$ 0,00');
+      $('.card-resumo').find('.overlay').hide();
+      erro('Erro ao fazer a busca do resumo!');
+    }
+  });
+}

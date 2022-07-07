@@ -45,11 +45,12 @@ class Usuario extends CI_Controller
 
   public function salvar_usuario()
   {
+    $this->load->model('usuarios_model');
     $post = $this->input->post();
     if (!empty($post)) {
       $dados_usu = [
         'nome_usu' => formata_string($post['nome'], 'string'),
-        'email_usu' => formata_string($post['email'], 'string'),
+        'email_usu' => formata_string($post['email'], 'email'),
         'documento_usu' => formata_string($post['documento'], 'numeric'),
       ];
 

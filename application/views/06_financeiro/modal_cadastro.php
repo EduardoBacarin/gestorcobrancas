@@ -58,6 +58,20 @@
             <div class="row">
               <div class="col-md-12">
                 <div class="form-group">
+                  <?php $campo = 'codigo_catfin'; ?>
+                  <label for="<?= $campo ?>">Categoria </label>
+                  <select class="selectpicker custom-select form-control" id="<?= $campo ?>" name="<?= $campo ?>">
+                    <option value="0" selected>Selecione uma Categoria</option>
+                    <?php foreach ($categoria_financeiro as $item) { ?>
+                      <option value="<?=$item->codigo_catfin?>"><?=$item->nome_catfin?></option>
+                    <?php } ?>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
                   <?php $campo = 'nome_fin'; ?>
                   <label for="<?= $campo ?>">Nome: </label>
                   <input type="text" class="form-control" id="<?= $campo ?>" name="<?= $campo ?>" placeholder="Nome">

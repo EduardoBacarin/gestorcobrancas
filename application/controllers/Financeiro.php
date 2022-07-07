@@ -22,9 +22,20 @@ class Financeiro extends CI_Controller
   public function index()
   {
     $this->load->model('funcionarios_model', 'funcionarios');
-    $rodape['js'] = ['assets/js/financeiro.js'];
+    $this->load->model('financeiro_model', 'financeiro');
+
+    $rodape['js'] = [
+      'assets/plugins/apexcharts-bundle/dist/apexcharts.min.js',
+      'assets/js/financeiro.js'
+    ];
+
+    $rodape['css'] = [
+      'assets/plugins/apexcharts-bundle/dist/apexcharts.css'
+    ];
 
     $data['funcionarios'] = $this->funcionarios->listar_todos();
+    $data['categoria_financeiro'] = $this->financeiro->listar_categorias();
+
     $this->load->view('estrutura/topo');
     $this->load->view('06_financeiro/lista');
     $this->load->view('06_financeiro/modal_cadastro', $data);
@@ -40,9 +51,11 @@ class Financeiro extends CI_Controller
       $page   = $post['start'];
       $limit  = $post['length'];
       $q      = $post['search']['value'];
+      $mes    = $post['mes_selecionado'];
+      $ano    = $post['ano_selecionado'];
 
-      $dados = $this->financeiro->listar_despesas($limit, $page);
-      $total = $this->financeiro->contar_despesas();
+      $dados = $this->financeiro->listar_despesas($limit, $page, $mes, $ano);
+      $total = $this->financeiro->contar_despesas($mes, $ano);
 
       if (!empty($dados)) {
         $total_registros = $total;
@@ -99,9 +112,11 @@ class Financeiro extends CI_Controller
       $page   = $post['start'];
       $limit  = $post['length'];
       $q      = $post['search']['value'];
+      $mes    = $post['mes_selecionado'];
+      $ano    = $post['ano_selecionado'];
 
-      $dados = $this->financeiro->listar_receitas($limit, $page);
-      $total = $this->financeiro->contar_receitas();
+      $dados = $this->financeiro->listar_receitas($limit, $page, $mes, $ano);
+      $total = $this->financeiro->contar_receitas($mes, $ano);
 
       if (!empty($dados)) {
         $total_registros = $total;
@@ -161,7 +176,8 @@ class Financeiro extends CI_Controller
 
         $array = [
           'tipo_fin' => $post['tipo_fin'],
-          'codigo_usu' => formata_string($post['codigo_usu'], 'numeric'),
+          'codigo_usu' => $post['codigo_usu'],
+          'codigo_catfin' => $post['codigo_catfin'],
           'data_fin' => $post['data_fin'],
           'nome_fin' => formata_string($post['nome_fin'], 'string'),
           'valor_fin' => floatval(formata_string($post['valor_fin'], 'money')),
@@ -222,6 +238,56 @@ class Financeiro extends CI_Controller
       } else {
         echo json_encode(array('retorno' => false, 'msg' => 'Falha ao excluir o cliente!'));
       }
+    }
+  }
+
+  public function grafico_despesas_categoria(){
+    $this->load->model('financeiro_model', 'financeiro');
+    $dados = $this->financeiro->despesas_categoria();
+    if (!empty($dados)){
+      $categoria = [];
+      $soma = [];
+      foreach ($dados as $item){
+        array_push($categoria, $item->nome_catfin);
+        array_push($soma, floatval($item->valor_fin));
+      }
+
+      echo json_encode(array('retorno' => true, 'soma' => $soma, 'categoria' => $categoria));
+    }
+  }
+
+  public function grafico_despesas_funcionario(){
+    $this->load->model('financeiro_model', 'financeiro');
+    $dados = $this->financeiro->despesas_funcionario();
+    if (!empty($dados)){
+      $funcionario = [];
+      $soma = [];
+      foreach ($dados as $item){
+        array_push($funcionario, $item->nome_usu);
+        array_push($soma, floatval($item->valor_fin));
+      }
+
+      echo json_encode(array('retorno' => true, 'soma' => $soma, 'funcionario' => $funcionario));
+    }
+  }
+
+  public function calcula_resumo(){
+    $this->load->model('financeiro_model', 'financeiro');
+    $post = $this->input->post();
+    $dados = $this->financeiro->resumo_financeiro($post['mes'], $post['ano']);
+    if (!empty($dados)){
+      $calculo['despesa'] = 0;
+      $calculo['receita'] = 0;
+      foreach ($dados as $item){
+        if ($item->tipo_fin == 1){
+          $calculo['despesa'] = $item->valor_fin;
+        }else{
+          $calculo['receita'] = $item->valor_fin;
+        }
+      }
+      echo json_encode(array('retorno' => true, 'despesa' => $calculo['despesa'], 'receita' => $calculo['receita']));
+    }else{
+      echo json_encode(array('retorno' => false));
     }
   }
 
