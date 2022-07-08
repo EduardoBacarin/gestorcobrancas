@@ -58,9 +58,9 @@ class Dashboard extends CI_Controller{
           $menu = '<div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">Ações </button>
                     <div class="dropdown-menu">
-                    <a class="dropdown-item item-pago" data-codigo="' . $dt->codigo_par . '" data-limite="' . $data_vencimento->format('Y-m-d') . '" data-lucro="' . $dt->lucro_par . '" data-valor="' . floatval($dt->valor_par) . '" data-valororiginal="' . number_format(floatval($valor_parcela_semjuros), 2, '.', '') . '" style="display: ' . ($dt->status_par == 3 || $dt->status_par == 4 ? 'none;' : '') . '"> <i class="fa-solid fa-money-bill" style="color: green"></i> Marcar Pago</a>
-                      <a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_par . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>
-                    </div>
+                    <a class="dropdown-item item-pago" data-codigo="' . $dt->codigo_par . '" data-limite="' . $data_vencimento->format('Y-m-d') . '" data-lucro="' . $dt->lucro_par . '" data-valor="' . floatval($dt->valor_par) . '" data-valororiginal="' . number_format(floatval($valor_parcela_semjuros), 2, '.', '') . '" style="display: ' . ($dt->status_par == 3 || $dt->status_par == 4 ? 'none;' : '') . '"> <i class="fa-solid fa-money-bill" style="color: green"></i> Marcar Pago</a>' . 
+                    ($this->session->userdata('usuario')['nivel_usu'] == 1 ? '<a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_par . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>' : '') .
+                    '</div>
                   </div>';
 
           $restante = $dt->total_cob - $dt->valorpago_par;

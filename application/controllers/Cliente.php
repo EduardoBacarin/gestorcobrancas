@@ -52,9 +52,9 @@ class Cliente extends CI_Controller
           $menu = '<div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">Ações </button>
                     <div class="dropdown-menu">
-                      <a class="dropdown-item item-editar" data-codigo="' . $dt->codigo_cli . '" data-nome="' . $dt->nome_cli . '"> <i class="fa-solid fa-pen"></i> Editar</a>
-                      <a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_cli . '" data-nome="' . $dt->nome_cli . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>
-                    </div>
+                      <a class="dropdown-item item-editar" data-codigo="' . $dt->codigo_cli . '" data-nome="' . $dt->nome_cli . '"> <i class="fa-solid fa-pen"></i> Editar</a> ' . 
+                      ($this->session->userdata('usuario')['nivel_usu'] == 1 ? '<a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_cli . '" data-nome="' . $dt->nome_cli . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>' : '') .
+                    '</div>
                   </div>';
           $tipodoc = '';
           $array = array(

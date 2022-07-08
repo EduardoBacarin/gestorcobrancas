@@ -63,9 +63,9 @@ class Cobranca extends CI_Controller
           $menu = '<div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">Ações </button>
                     <div class="dropdown-menu">
-                      <a class="dropdown-item item-verparcelas" data-codigo="' . $dt->codigo_cob . '"> <i class="fa-solid fa-magnifying-glass-dollar" style="color: green"></i> Ver Parcelas</a>
-                      <a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_cob . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>
-                    </div>
+                      <a class="dropdown-item item-verparcelas" data-codigo="' . $dt->codigo_cob . '"> <i class="fa-solid fa-magnifying-glass-dollar" style="color: green"></i> Ver Parcelas</a>' . 
+                      ($this->session->userdata('usuario')['nivel_usu'] == 1 ? '<a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_cob . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>' : '') .
+                    '</div>
                   </div>';
 
           switch ($dt->tipocobranca_cob) {
