@@ -16,6 +16,8 @@ class Financeiro extends CI_Controller
     // echo json_encode($this->session->userdata());exit;
     if (empty($this->session->userdata('usuario')) || $this->session->userdata('usuario') == false) {
       redirect('login');
+    }else if($this->session->userdata('usuario')['nivel_usu'] !== 1){
+      redirect('login');
     }
   }
 
