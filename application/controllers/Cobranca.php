@@ -63,9 +63,9 @@ class Cobranca extends CI_Controller
           $menu = '<div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">Ações </button>
                     <div class="dropdown-menu">
-                      <a class="dropdown-item item-verparcelas" data-codigo="' . $dt->codigo_cob . '"> <i class="fa-solid fa-magnifying-glass-dollar" style="color: green"></i> Ver Parcelas</a>' . 
-                      ($this->session->userdata('usuario')['nivel_usu'] == 1 ? '<a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_cob . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>' : '') .
-                    '</div>
+                      <a class="dropdown-item item-verparcelas" data-codigo="' . $dt->codigo_cob . '"> <i class="fa-solid fa-magnifying-glass-dollar" style="color: green"></i> Ver Parcelas</a>' .
+            ($this->session->userdata('usuario')['nivel_usu'] == 1 ? '<a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_cob . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>' : '') .
+            '</div>
                   </div>';
 
           switch ($dt->tipocobranca_cob) {
@@ -183,9 +183,9 @@ class Cobranca extends CI_Controller
             $menu .= '<a class="dropdown-item item-jurosatraso" data-codigo="' . $dt->codigo_par . '"> <i class="fa-solid fa-trash-can"></i> Calcular Juros de Atraso</a>';
           }
 
-          $menu .= '<a class="dropdown-item item-pago" data-codigo="' . $dt->codigo_par . '" data-limite="' . $data_vencimento->format('Y-m-d') . '" data-lucro="' . $dt->lucro_par . '" data-valor="' . floatval($dt->valor_par) . '" data-valororiginal="' . number_format(floatval($valor_parcela_semjuros), 2, '.', '') . '" style="display: ' . ($dt->status_par == 3 || $dt->status_par == 4 ? 'none;' : '') . '"> <i class="fa-solid fa-money-bill" style="color: green"></i> Marcar Pago</a>
-                      <a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_par . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>
-                    </div>
+          $menu .= '<a class="dropdown-item item-pago" data-codigo="' . $dt->codigo_par . '" data-limite="' . $data_vencimento->format('Y-m-d') . '" data-lucro="' . $dt->lucro_par . '" data-valor="' . floatval($dt->valor_par) . '" data-valororiginal="' . number_format(floatval($valor_parcela_semjuros), 2, '.', '') . '" style="display: ' . ($dt->status_par == 3 || $dt->status_par == 4 ? 'none;' : '') . '"> <i class="fa-solid fa-money-bill" style="color: green"></i> Marcar Pago</a> ' .
+            ($this->session->userdata('usuario')['nivel_usu'] == 1 ? '<a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_par . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>' : '') .
+            '</div>
                   </div>';
 
           $restante = $dt->total_cob - $dt->valorpago_par;
@@ -297,16 +297,16 @@ class Cobranca extends CI_Controller
             for ($i = 0; $i < $post['qtdparcelas_cob']; $i++) {
               if ($post['tipocobranca_cob'] == 1) {
                 $datapagamento = new DateTime(date("Y-m-" . $post['diacobranca_cob']));
-                $datapagamento->modify('+' . $i+1 . ' months');
+                $datapagamento->modify('+' . $i + 1 . ' months');
 
                 $datavencimento = new DateTime(date("Y-m-" . $post['dialimite_cob']));
-                $datavencimento->modify('+' . $i+1 . ' months');
+                $datavencimento->modify('+' . $i + 1 . ' months');
               } else {
                 $datapagamento = new DateTime(date("Y-m-d"));
-                $datapagamento->modify('+' . $i+1 . ' days');
+                $datapagamento->modify('+' . $i + 1 . ' days');
 
                 $datavencimento = new DateTime(date("Y-m-d"));
-                $datavencimento->modify('+' . $i+1 . ' days');
+                $datavencimento->modify('+' . $i + 1 . ' days');
               }
 
               $array_parcela = [

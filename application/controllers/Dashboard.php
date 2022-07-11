@@ -7,17 +7,20 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * 
  **/
 
-class Dashboard extends CI_Controller{
-    
-  public function __construct(){
+class Dashboard extends CI_Controller
+{
+
+  public function __construct()
+  {
     parent::__construct();
     // echo json_encode($this->session->userdata());exit;
-    if(empty($this->session->userdata('usuario')) || $this->session->userdata('usuario') == false){
+    if (empty($this->session->userdata('usuario')) || $this->session->userdata('usuario') == false) {
       redirect('login');
     }
   }
 
-  public function index(){
+  public function index()
+  {
     $this->load->model('dashboard_model', 'dashboard');
     $rodape['js'] = [
       'assets/js/dashboard.js',
@@ -28,7 +31,7 @@ class Dashboard extends CI_Controller{
     $data['pagam_hoje'] = !empty($this->dashboard->vencem_hoje()) ? $this->dashboard->vencem_hoje() : 0;
     $data['lucro'] = !empty($this->dashboard->lucro_pagos()) ? number_format($this->dashboard->lucro_pagos()[0]->lucro_par, 2, ',', '.') : '0,00';
     $data['lucro_mes'] = !empty($this->dashboard->lucro_pagos_mes()) ? number_format($this->dashboard->lucro_pagos_mes()[0]->lucro_par, 2, ',', '.') : '0,00';
-    
+
     $this->load->view('estrutura/topo');
     $this->load->view('02_dashboard/dashboard', $data);
     $this->load->view('estrutura/rodape', $rodape);
@@ -58,9 +61,9 @@ class Dashboard extends CI_Controller{
           $menu = '<div class="btn-group">
                     <button type="button" class="btn btn-default dropdown-toggle dropdown-icon" data-toggle="dropdown">Ações </button>
                     <div class="dropdown-menu">
-                    <a class="dropdown-item item-pago" data-codigo="' . $dt->codigo_par . '" data-limite="' . $data_vencimento->format('Y-m-d') . '" data-lucro="' . $dt->lucro_par . '" data-valor="' . floatval($dt->valor_par) . '" data-valororiginal="' . number_format(floatval($valor_parcela_semjuros), 2, '.', '') . '" style="display: ' . ($dt->status_par == 3 || $dt->status_par == 4 ? 'none;' : '') . '"> <i class="fa-solid fa-money-bill" style="color: green"></i> Marcar Pago</a>' . 
-                    ($this->session->userdata('usuario')['nivel_usu'] == 1 ? '<a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_par . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>' : '') .
-                    '</div>
+                    <a class="dropdown-item item-pago" data-codigo="' . $dt->codigo_par . '" data-limite="' . $data_vencimento->format('Y-m-d') . '" data-lucro="' . $dt->lucro_par . '" data-valor="' . floatval($dt->valor_par) . '" data-valororiginal="' . number_format(floatval($valor_parcela_semjuros), 2, '.', '') . '" style="display: ' . ($dt->status_par == 3 || $dt->status_par == 4 ? 'none;' : '') . '"> <i class="fa-solid fa-money-bill" style="color: green"></i> Marcar Pago</a>' .
+            ($this->session->userdata('usuario')['nivel_usu'] == 1 ? '<a class="dropdown-item item-excluir" data-codigo="' . $dt->codigo_par . '"> <i class="fa-solid fa-trash-can"></i> Excluir</a>' : '') .
+            '</div>
                   </div>';
 
           $restante = $dt->total_cob - $dt->valorpago_par;
@@ -96,5 +99,4 @@ class Dashboard extends CI_Controller{
       }
     }
   }
-
 }
