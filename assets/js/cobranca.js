@@ -1,6 +1,6 @@
 var base_url = $("#base_url").val();
 var avisos = "Obrigatório."
-var tabela_cobrancas;
+var tabela_cobrancas, tabela_parcelas;
 var mes_selecionado = $('#mes_selecionado').val();
 var ano_selecionado = $('#ano_selecionado').val();
 
@@ -397,7 +397,7 @@ $(document).on('click', '.item-verparcelas', function () {
   if ($.fn.DataTable.isDataTable('#tabela-parcelas')) {
     tabela_parcelas.destroy();
   }
-  var tabela_parcelas = $("#tabela-parcelas").DataTable({
+  tabela_parcelas = $("#tabela-parcelas").DataTable({
     "ordering": false,
     "serverSide": true,
     "aaSorting": [],

@@ -297,16 +297,16 @@ class Cobranca extends CI_Controller
             for ($i = 0; $i < $post['qtdparcelas_cob']; $i++) {
               if ($post['tipocobranca_cob'] == 1) {
                 $datapagamento = new DateTime(date("Y-m-" . $post['diacobranca_cob']));
-                $datapagamento->modify('+' . $i . ' months');
+                $datapagamento->modify('+' . $i+1 . ' months');
 
                 $datavencimento = new DateTime(date("Y-m-" . $post['dialimite_cob']));
-                $datavencimento->modify('+' . $i . ' months');
+                $datavencimento->modify('+' . $i+1 . ' months');
               } else {
                 $datapagamento = new DateTime(date("Y-m-d"));
-                $datapagamento->modify('+' . $i . ' days');
+                $datapagamento->modify('+' . $i+1 . ' days');
 
                 $datavencimento = new DateTime(date("Y-m-d"));
-                $datavencimento->modify('+' . $i . ' days');
+                $datavencimento->modify('+' . $i+1 . ' days');
               }
 
               $array_parcela = [
