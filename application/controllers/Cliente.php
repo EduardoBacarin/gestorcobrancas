@@ -22,7 +22,7 @@ class Cliente extends CI_Controller
   public function index()
   {
 
-    $rodape['js'] = ['assets/js/cliente.js'];
+    $rodape['js'] = ['assets/js/cliente.js' . V];
     $this->load->view('estrutura/topo');
     $this->load->view('03_clientes/lista');
     $this->load->view('03_clientes/modal_cadastro');

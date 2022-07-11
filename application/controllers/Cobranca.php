@@ -23,7 +23,7 @@ class Cobranca extends CI_Controller
   {
     $this->load->model('clientes_model', 'clientes');
     $rodape['js'] = [
-      'assets/js/cobranca.js',
+      'assets/js/cobranca.js' . V,
       'assets/plugins/bootstrap-select-1.13.14/dist/js/bootstrap-select.min.js',
     ];
     $topo['css'] = [

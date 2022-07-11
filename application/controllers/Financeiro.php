@@ -27,7 +27,7 @@ class Financeiro extends CI_Controller
 
     $rodape['js'] = [
       'assets/plugins/apexcharts-bundle/dist/apexcharts.min.js',
-      'assets/js/financeiro.js'
+      'assets/js/financeiro.js' . V,
     ];
 
     $rodape['css'] = [

@@ -23,7 +23,7 @@ class Dashboard extends CI_Controller
   {
     $this->load->model('dashboard_model', 'dashboard');
     $rodape['js'] = [
-      'assets/js/dashboard.js',
+      'assets/js/dashboard.js' . V,
     ];
     $data['cobrancas'] = !empty($this->dashboard->total_cobrancas()) ? $this->dashboard->total_cobrancas() : 0;
     $data['cobrancas_mes'] = !empty($this->dashboard->total_cobrancas_mes()) ? $this->dashboard->total_cobrancas_mes() : 0;

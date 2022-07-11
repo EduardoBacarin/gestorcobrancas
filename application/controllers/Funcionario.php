@@ -24,7 +24,7 @@ class Funcionario extends CI_Controller
   public function index()
   {
 
-    $rodape['js'] = ['assets/js/funcionario.js'];
+    $rodape['js'] = ['assets/js/funcionario.js' . V];
     $this->load->view('estrutura/topo');
     $this->load->view('05_funcionarios/lista');
     $this->load->view('05_funcionarios/modal_cadastro');
