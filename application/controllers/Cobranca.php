@@ -295,18 +295,19 @@ class Cobranca extends CI_Controller
           if ($post['codigo_cob'] == 0) {
             $inserir = $this->cobrancas->inserir($array);
             for ($i = 0; $i < $post['qtdparcelas_cob']; $i++) {
+              $add = $i+1;
               if ($post['tipocobranca_cob'] == 1) {
                 $datapagamento = new DateTime(date("Y-m-" . $post['diacobranca_cob']));
-                $datapagamento->modify('+' . $i + 1 . ' months');
+                $datapagamento->modify('+' . $add . ' months');
 
                 $datavencimento = new DateTime(date("Y-m-" . $post['dialimite_cob']));
-                $datavencimento->modify('+' . $i + 1 . ' months');
+                $datavencimento->modify('+' . $add . ' months');
               } else {
                 $datapagamento = new DateTime(date("Y-m-d"));
-                $datapagamento->modify('+' . $i + 1 . ' days');
+                $datapagamento->modify('+' . $add . ' days');
 
                 $datavencimento = new DateTime(date("Y-m-d"));
-                $datavencimento->modify('+' . $i + 1 . ' days');
+                $datavencimento->modify('+' . $add . ' days');
               }
 
               $array_parcela = [
@@ -316,7 +317,7 @@ class Cobranca extends CI_Controller
                 'datapagamento_par'   => $datapagamento->format('Y-m-d H:i:s'),
                 'datavencimento_par'  => $datavencimento->format('Y-m-d H:i:s'),
                 'lucro_par'           => number_format($lucro_parcela, 2, '.', ''),
-                'parcela_par'         => $i + 1,
+                'parcela_par'         => $add,
                 'status_par'          => 1,
                 'ativo_par'           => 1,
               ];

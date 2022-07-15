@@ -101,7 +101,9 @@ class Dashboard_model extends CI_Model
 	{
 		$this->db->select("COUNT(codigo_par)");
 		$this->db->from("parcelas_cobranca");
+		$this->db->join("cobrancas", "cobrancas.codigo_cob = parcelas_cobranca.codigo_cob", 'inner');
 		$this->db->where("parcelas_cobranca.ativo_par", true);
+		$this->db->where("cobrancas.ativo_cob", true);
 		$this->db->where("parcelas_cobranca.datavencimento_par", date('Y-m-d'));
 		$this->db->where("parcelas_cobranca.status_par", 1);
 
