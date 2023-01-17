@@ -48,11 +48,11 @@
                 </select>
               </div>
               <?php if ($this->session->userdata('usuario')['nivel_usu'] == 1) { ?>
-              <div class="col-md-4  d-flex justify-content-end">
-                <button type="button" class="btn btn-info" id="btn-modal-cadastro">
-                  <i class="fas fa-plus"></i> Cadastrar
-                </button>
-              </div>
+                <div class="col-md-4  d-flex justify-content-end">
+                  <button type="button" class="btn btn-info" id="btn-modal-cadastro">
+                    <i class="fas fa-plus"></i> Cadastrar
+                  </button>
+                </div>
               <?php } ?>
             </div>
           </div>
@@ -65,7 +65,6 @@
             <thead>
               <th>#</th>
               <th>Cliente</th>
-              <th>Cidade / UF</th>
               <th>Parcelas</th>
               <th>Taxa</th>
               <th>Tipo</th>

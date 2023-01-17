@@ -49,7 +49,7 @@ class Cobranca extends CI_Controller
       $mes    = $post['mes_selecionado'];
       $ano    = $post['ano_selecionado'];
       $dados = $this->cobrancas->listar($limit, $page, $mes, $ano, $q);
-      $total = $this->cobrancas->contar($q);
+      $total = $this->cobrancas->contar($q, $mes, $ano);
 
       if (!empty($dados)) {
         $total_registros = $total;
@@ -83,7 +83,6 @@ class Cobranca extends CI_Controller
           $array = array(
             $dt->codigo_cob,
             limitaTexto($dt->nome_cli, 40),
-            $dt->nome_cid . '/' . $dt->uf_est,
             $dt->qtdparcelas_cob,
             $dt->taxa_cob . '%',
             $tipo,

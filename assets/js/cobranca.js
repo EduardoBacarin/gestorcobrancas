@@ -38,10 +38,6 @@ $(document).ready(function () {
     },
     {
       "width": "10%",
-      "name": "Cidade",
-    },
-    {
-      "width": "10%",
       "name": "Parcelas"
     },
     {
