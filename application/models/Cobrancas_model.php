@@ -109,9 +109,6 @@ class Cobrancas_model extends CI_Model
 		$this->db->select("*");
 		$this->db->from("parcelas_cobranca");
 		$this->db->join("cobrancas", "cobrancas.codigo_cob = parcelas_cobranca.codigo_cob", 'inner');
-		$this->db->join("cliente", "cliente.codigo_cli = cobrancas.codigo_cli", 'inner');
-		$this->db->join("cidades", "cidades.codigo_cid = cliente.codigo_cid", 'inner');
-		$this->db->join("estados", "estados.codigo_est = cidades.codigo_est", 'inner');
 		$this->db->where("cobrancas.ativo_cob", true);
 		$this->db->where("parcelas_cobranca.codigo_cob", $cobranca);
 		$this->db->limit($limit, $offset);
