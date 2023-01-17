@@ -6,7 +6,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  * Model Veterinarios_model
  *
  * This Model for ...
- * 
+ *
  * @package		CodeIgniter
  * @category	Model
  * @author    Setiawan Jodi <jodisetiawan@fisip-untirta.ac.id>
@@ -96,7 +96,7 @@ class Cobrancas_model extends CI_Model
 			$this->db->or_like("cobrancas.total_cob", $busca);
 		}
 		$this->db->order_by('cobrancas.datacadastro_cob', 'ASC');
-        $this->db->limit($limit, $offset);
+		$this->db->limit($limit, $offset);
 		$query = $this->db->get();
 
 		if ($query->num_rows() >= 1) {
@@ -116,7 +116,7 @@ class Cobrancas_model extends CI_Model
 		$this->db->join("estados", "estados.codigo_est = cidades.codigo_est", 'inner');
 		$this->db->where("cobrancas.ativo_cob", true);
 		$this->db->where("parcelas_cobranca.codigo_cob", $cobranca);
-        $this->db->limit($limit, $offset);
+		$this->db->limit($limit, $offset);
 		$query = $this->db->get();
 
 		if ($query->num_rows() >= 1) {
@@ -194,6 +194,36 @@ class Cobrancas_model extends CI_Model
 		// print_r($this->db->last_query());exit;
 
 		if ($query->num_rows() == 1) {
+			return $query->result();
+		} else {
+			return false;
+		}
+	}
+
+	public function calcula_restante($codigo_cob)
+	{
+		$this->db->select("COUNT(*) as parcelas_restante, SUM(valor_par) as total_restante");
+		$this->db->from("parcelas_cobranca");
+		$this->db->where("parcelas_cobranca.codigo_cob", $codigo_cob);
+		$this->db->where("parcelas_cobranca.status_par <=", 2);
+		$query = $this->db->get();
+
+		if ($query->num_rows() > 0) {
+			return $query->result();
+		} else {
+			return false;
+		}
+	}
+
+
+	public function calcula_pago($codigo_cob)
+	{
+		$this->db->select("COUNT(*) as parcelas_paga, SUM(valorpago_par) as total_pago");
+		$this->db->from("parcelas_cobranca");
+		$this->db->where("parcelas_cobranca.status_par >=", 3);
+		$this->db->where("parcelas_cobranca.codigo_cob", $codigo_cob);
+		$query = $this->db->get();
+		if ($query->num_rows() > 0) {
 			return $query->result();
 		} else {
 			return false;

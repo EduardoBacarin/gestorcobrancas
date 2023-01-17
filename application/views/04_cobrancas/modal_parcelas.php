@@ -10,6 +10,60 @@
       </div>
       <div class="modal-body">
         <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3 id="parcela-restante"></h3>
+
+                <p>Parcelas Restante</p>
+              </div>
+              <div class="icon">
+                <i class="fa-solid fa-money-bill-trend-up"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-warning">
+              <div class="inner">
+                <h3 id="valor-restante"></h3>
+
+                <p>Valor Restante</p>
+              </div>
+              <div class="icon">
+                <i class="fa-solid fa-money-bill-trend-up"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3 id="valor-pago"></h3>
+
+                <p>Valor Pago</p>
+              </div>
+              <div class="icon">
+                <i class="fa-solid fa-money-bill-trend-up"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-success">
+              <div class="inner">
+                <h3 id="parcelas-paga"></h3>
+
+                <p>Parcelas Pagas</p>
+              </div>
+              <div class="icon">
+                <i class="fa-solid fa-money-bill-trend-up"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
           <div class="col-md-12">
             <table id="tabela-parcelas" class="table table-bordered table-hover dataTable dtr-inline">
               <thead>

@@ -397,6 +397,7 @@ $(document).on('click', '.item-verparcelas', function () {
   if ($.fn.DataTable.isDataTable('#tabela-parcelas')) {
     tabela_parcelas.destroy();
   }
+
   tabela_parcelas = $("#tabela-parcelas").DataTable({
     "ordering": false,
     "serverSide": true,
@@ -418,6 +419,27 @@ $(document).on('click', '.item-verparcelas', function () {
       url: base_url + "cobranca/listar_parcelas/",
       'data': function (data) {
         data.cobranca = codigo;
+
+        $.ajax({
+          url: base_url + 'cobranca/calcula_restante',
+          type: 'POST',
+          data: { codigo: codigo },
+          dataType: 'json',
+          success: function (data) {
+            if (data.return) {
+              $('#parcela-restante').text(data.restante[0].parcelas_restante)
+              $('#valor-restante').text('R$ ' + parseFloat(data.restante[0].total_restante).toFixed(2))
+
+              $('#parcelas-paga').text(data.pago[0].parcelas_paga)
+              $('#valor-pago').text('R$ ' + parseFloat(data.pago[0].total_pago).toFixed(2))
+            } else {
+
+            }
+          },
+          error: function () {
+
+          }
+        });
       }
     },
     "columns": [{

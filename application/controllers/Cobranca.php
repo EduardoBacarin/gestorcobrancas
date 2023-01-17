@@ -4,7 +4,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
  *
  * Author: Eduardo de Oliveira Bacarin
  * Date: 05/04/2022
- * 
+ *
  **/
 
 class Cobranca extends CI_Controller
@@ -295,7 +295,7 @@ class Cobranca extends CI_Controller
           if ($post['codigo_cob'] == 0) {
             $inserir = $this->cobrancas->inserir($array);
             for ($i = 0; $i < $post['qtdparcelas_cob']; $i++) {
-              $add = $i+1;
+              $add = $i + 1;
               if ($post['tipocobranca_cob'] == 1) {
                 $datapagamento = new DateTime(date("Y-m-" . $post['diacobranca_cob']));
                 $datapagamento->modify('+' . $add . ' months');
@@ -464,6 +464,16 @@ class Cobranca extends CI_Controller
     } else {
       echo json_encode(array('return' => false, 'msg' => 'Falha ao calcular os juros!'));
     }
+  }
+
+
+  public function calcula_restante()
+  {
+    $post = $this->input->post();
+    $this->load->model('cobrancas_model', 'cobrancas');
+    $restante = $this->cobrancas->calcula_restante($post['codigo']);
+    $pago = $this->cobrancas->calcula_pago($post['codigo']);
+    echo json_encode(array('return' => true, 'restante' => $restante, 'pago' => $pago));
   }
 
 
