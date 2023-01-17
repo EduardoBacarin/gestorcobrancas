@@ -427,11 +427,16 @@ $(document).on('click', '.item-verparcelas', function () {
           dataType: 'json',
           success: function (data) {
             if (data.return) {
-              $('#parcela-restante').text(data.restante[0].parcelas_restante)
-              $('#valor-restante').text('R$ ' + parseFloat(data.restante[0].total_restante).toFixed(2))
+              let valor_restante = data.restante[0].total_restante > 0 ? parseFloat(data.restante[0].total_restante).toFixed(2) : 0.00;
+              let parcelas_restante = data.restante[0].parcelas_restante > 0 ? data.restante[0].parcelas_restante : 0;
 
-              $('#parcelas-paga').text(data.pago[0].parcelas_paga)
-              $('#valor-pago').text('R$ ' + parseFloat(data.pago[0].total_pago).toFixed(2))
+              let valor_pago = data.pago[0].total_pago > 0 ? parseFloat(data.pago[0].total_pago).toFixed(2) : 0.00;
+              let parcelas_paga = data.pago[0].parcelas_paga > 0 ? data.pago[0].parcelas_paga : 0;
+              $('#parcela-restante').text(parcelas_restante)
+              $('#valor-restante').text('R$ ' + valor_restante)
+
+              $('#parcelas-paga').text(parcelas_paga)
+              $('#valor-pago').text('R$ ' + valor_pago)
             } else {
 
             }
